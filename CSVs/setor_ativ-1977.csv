@@ -1,0 +1,12 @@
+COD;SETOR;DESCR;COD_UNIF;
+0;Não declarou;Não declarou;0;Sem informação
+1;Agrícola;Atividades agrícola, de reflorestamento, pecuária e outras que envolvem criação de animais, além das atividades extrativa vegetal e de pesca.;1;Agrícola
+2;Construção Civil;Inclui as atividades de construção e reparação de edificaçäes e obras de infra-estrutura.;2;Construção Civil
+3;Industrial;Atividade cujo produto passa por processo de transformação ou beneficiamento. Inclui as atividades relativas à extração mineral.;3;Indústria
+4;Comercial;Atividade de vendas de mercadorias realizada diretamente ao consumidor (vendas a varejo) ou para as empresas (vendas por atacado). Pode realizar-se tanto em estabelecimentos fixos ou ambulantes (nas vias públicas) ou diretamente em visita ao cliente.;4;Comércio
+5;Func. Público;"Atividade vinculada aos Poderes Legislativo, Judiciário e Executivo;  Serviços administrativos federais, estaduais, municipais e autárquicos; Exército, Marinha e Aeronáutica; Polícia Militar e Civil; Corpo de Bombeiros; e outras organizaçõs governamentais.";5;Administração Pública
+6;Serv. Transporte;Atividade de transporte de passageiros rodoviários, ferroviários, metroviários, aéreos e outros.Atividade de transporte de carga de mercadorias ou valores.;6;Serviços de Transporte
+7;Empr. Serviço;Empresas de Serviços;7;Serviços
+8;Serv. Autônomos;Serviços Autônomos;8;Serviços Autônomos
+9;Outro;Todos os demais setores não classificados anteriormente;9;Outros
+10;Não se aplica;Não se aplica;10;Não se aplica
