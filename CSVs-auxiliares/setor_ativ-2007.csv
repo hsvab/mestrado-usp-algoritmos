@@ -1,0 +1,16 @@
+COD;SETOR;DESCR;COD_UNIF;
+0;Sem informação;Sem informação;0;Sem informação
+1;Agrícola;Atividades agrícola, de reflorestamento, pecuária e outras que envolvem criação de animais, além das atividades extrativa vegetal e de pesca.;1;Agrícola
+2;Construção Civil;Inclui as atividades de construção e reparação de edificaçäes e obras de infra-estrutura.;2;Construção Civil
+3;Indústria;Atividade cujo produto passa por processo de transformação ou beneficiamento. Inclui as atividades relativas à extração mineral.;3;Indústria
+4;Comércio;Atividade de vendas de mercadorias realizada diretamente ao consumidor (vendas a varejo) ou para as empresas (vendas por atacado). Pode realizar-se tanto em estabelecimentos fixos ou ambulantes (nas vias públicas) ou diretamente em visita ao cliente.;4;Comércio
+5;Serviço de Transporte de Carga;Atividade de transporte de carga de mercadorias ou valores.;6;Serviços de Transporte
+6;Serviço de Transporte de Passageiros;Atividade de transporte de passageiros rodoviários, ferroviários, metroviários, aéreos e outros.;6;Serviços de Transporte
+7;Serviço Creditício-Financeiro;Atividade ligada ao serviços de créditos e financeiros (bancos, bolsa de valores), inclusive seguros e cartäes de crédito.;7;Serviços
+8;Serviço Pessoal;"Atividade de embelezamento pessoal; higiene; academia de dança, ginástica e luta; sauna, massagem e outros definidos como de necessidade pessoal.";7;Serviços
+9;Serviço de Alimentação;"Atividade ligada ao fornecimento de alimentação em bares, padarias,  restaurantes, lanchonetes, barracas e outros vendedores de rua; serviços de entrega a domicílio de alimentos para consumo imediato.";7;Serviços
+10;Serviço de Saúde;Atividade ligada aos serviços de saúde (hospitais, maternidades, consultórios, análises clínico-laboratoriais).;7;Serviços
+11;Serviço de Educação;Atividade ligada a todos os tipos de escola pública e privada, e as atividades dos professores particulares.;7;Serviços
+12;Serviço Especializado;Atividade ligada aos serviços de escritório, de assessorias e consultorias técnicas, jurídicas, econômicas, contábeis, serviços de pesquisa, serviços de processamento, análise e programação de dados e outros serviços técnicos profissionais.;7;Serviços
+13;Serviço de Adminitração Pública;"Atividade vinculada aos Poderes Legislativo, Judiciário e Executivo;  Serviços administrativos federais, estaduais, municipais e autárquicos; Exército, Marinha e Aeronáutica; Polícia Militar e Civil; Corpo de Bombeiros; e outras organizaçõs governamentais.";5;Administração Pública
+14;Outros;"Todos os demais setores não classificados anteriormente, como por  exemplo, os serviços de utilidade pública; reparação/limpeza; comunicação, serviços comunitários, serviços domésticos, hotelaria, embaixadas e consulados.";9;Outros
