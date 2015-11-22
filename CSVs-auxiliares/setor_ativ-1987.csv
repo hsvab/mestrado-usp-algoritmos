@@ -6,7 +6,7 @@ COD;SETOR;DESCR;COD_UNIF;
 4;Comércio;Atividade de vendas de mercadorias realizada diretamente ao consumidor (vendas a varejo) ou para as empresas (vendas por atacado). Pode realizar-se tanto em estabelecimentos fixos ou ambulantes (nas vias públicas) ou diretamente em visita ao cliente.;4;Comércio
 5;Funcionalismo Público;"Atividade vinculada aos Poderes Legislativo, Judiciário e Executivo;  Serviços administrativos federais, estaduais, municipais e autárquicos; Exército, Marinha e Aeronáutica; Polícia Militar e Civil; Corpo de Bombeiros; e outras organizaçõs governamentais.";5;Administração Pública
 6;Serviços de Transporte;Atividade de transporte de passageiros rodoviários, ferroviários, metroviários, aéreos e outros.Atividade de transporte de carga de mercadorias ou valores.;6;Serviços de Transporte
-7;Empresa de Serviços;Empresa de Serviços;7;Serviços
-8;Serviços Autônomos;Serviços Autônomos;8;Serviços Autônomos
-9;Outros;"Todos os demais setores não classificados anteriormente, como por  exemplo, os serviços de utilidade pública; reparação/limpeza; comunicação, serviços comunitários, serviços domésticos, hotelaria, embaixadas e consulados.";9;Outros
-10;Não se aplica;Não se aplica;10;Não se aplica
+7;Empresa de Serviços;Empresa de Serviços;7;Outros Serviços
+8;Serviços Autônomos;Serviços Autônomos;7;Outros Serviços
+9;Outros;"Todos os demais setores não classificados anteriormente, como por  exemplo, os serviços de utilidade pública; reparação/limpeza; comunicação, serviços comunitários, serviços domésticos, hotelaria, embaixadas e consulados.";8;Outros
+10;Não se aplica;Não se aplica;9;Não se aplica
