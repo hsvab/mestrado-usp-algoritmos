@@ -4,7 +4,7 @@
 # VIAG_MOTIVO_TRAB é marcador da viagem motivo destino trabalho (1 - indústria, 2 - comércio ou 3 - serviços)
 # VIAG_MOTIVO_EDUC é marcador da viagem motivo destino educação (4 - educação)
 # VIAG_MOTIVO_RES é marcador da viagem motivo destino residência (8 - residência)
-# VIAG_MOTIVO_OUTROS é marcador da viagem motivo destino uotros (5 - compras, 6 - saúde, 7 - lazer, 9 - outros)
+# VIAG_MOTIVO_OUTROS é marcador da viagem motivo destino outros (5 - compras, 6 - saúde, 7 - lazer, 9 - outros)
 
 od <- od  %>%
   

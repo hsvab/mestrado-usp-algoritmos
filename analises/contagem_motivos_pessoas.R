@@ -5,7 +5,7 @@
 # PESS_MOTIVO_EDUC
 # PESS_MOTIVO_RES
 # PESS_MOTIVO_OUTROS
-# PESS_NO_MOTIVOS conta quantos motivos diferentes fora utilizados, por pessoa, de acordo com estas 4 categorias
+# PESS_NO_MOTIVOS conta quantos motivos diferentes foram utilizados, por pessoa, de acordo com estas 4 categorias
 
 # Usando variável auxiliar AUX1 para agrupar por pessoa e fazer somatório de VIAG_MOTIVO_TRAB
 AUX1 <- od %>% select(ANO, F_PESS, ID_PESS, VIAG_MOTIVO_TRAB) %>% 
