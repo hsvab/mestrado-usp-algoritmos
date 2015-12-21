@@ -13,6 +13,8 @@
 # CO_DEST_X = lat2
 # CO_DEST_Y = long2
 #
+library(dplyr)
+library(ggplot2)
 #                     long1,      lat1,      long2,     lat2
 GcdVif <- function(CO_ORIG_Y, CO_ORIG_X, CO_DEST_Y, CO_DEST_X) {
     # Função para converter um ângulo de graus para radianos.
@@ -50,7 +52,7 @@ GcdVif <- function(CO_ORIG_Y, CO_ORIG_X, CO_DEST_Y, CO_DEST_X) {
         cosLambda <- cos(lambda)
         sinSigma <- sqrt( (cosU2*sinLambda) * (cosU2*sinLambda) +
                           (cosU1*sinU2-sinU1*cosU2*cosLambda) * (cosU1*sinU2-sinU1*cosU2*cosLambda) )
-        if (sinSigma==0) return(0)  # Co-incident points
+        if (sinSigma==0) return(0)
         cosSigma <- sinU1*sinU2 + cosU1*cosU2*cosLambda
         sigma <- atan2(sinSigma, cosSigma)
         sinAlpha <- cosU1 * cosU2 * sinLambda / sinSigma
