@@ -1,5 +1,4 @@
 # Criando novas variaveis com marcação da faixa etária, para posterior regressão linear
-# e definição de (i) quem é criança e (ii) quem é idoso?
 #
 # Faixas Etárias:
 # valor & label
