@@ -1,100 +1,347 @@
-# http://www.r-bloggers.com/great-circle-distance-calculations-in-r/
-#
-# Calcula a distância geodésica entre dois pontos especificando
-# latitude e longitude (em graus) usando a
-# Fórmula Inversa de Vincenty para elipsóides (vif)
-# Este é um processo iterativo e é o mais preciso para cálculo das distâncias.
-# É o método que mais se aproxima do resultado apresentado pelo NHC:
-# http://www.nhc.noaa.gov/gccalc.shtml
-#
-# Referência: SaoPaulo = ("latitude"="-23.5333333", "longitude"="-46.6166667")
-# CO_ORIG_X = lat1
-# CO_ORIG_Y = long1
-# CO_DEST_X = lat2
-# CO_DEST_Y = long2
-#
 library(dplyr)
 library(ggplot2)
-#                     long1,      lat1,      long2,     lat2
-GcdVif <- function(CO_ORIG_Y, CO_ORIG_X, CO_DEST_Y, CO_DEST_X) {
-    # Função para converter um ângulo de graus para radianos.
-    Deg2Rad <- function(deg) return(deg*pi/180)
+setwd("~/haydee/mestrado/mestrado-usp-algoritmos/analises")
 
-    lat1 <- Deg2Rad(CO_ORIG_X)
-    long1 <- Deg2Rad(CO_ORIG_Y)
-    lat2 <- Deg2Rad(CO_DEST_X)
-    long2 <- Deg2Rad(CO_DEST_Y)
+# #Plotando histograma, por ano, das distâncias viagem
+# ggplot(od,aes(x=as.numeric(DIST_VIAG),fill=as.factor(ANO))) +
+#     geom_histogram(binwidth=5,position="dodge")
 
-    # Parâmetros para elipsoides na projeção WGS-84
-    a <- 6378137         # comprimento do maior eixo do elipsoide (raio no equador)
-    b <- 6356752.314245  # comprimento do menor eixo do elipsoide (raio nos polos)
-    f <- 1/298.257223563 # Flattening (achatamento) do elipsoide
-
-    L <- long2-long1 # diferença nas longitudes
-    U1 <- atan((1-f) * tan(lat1)) # latitude reduzida
-    U2 <- atan((1-f) * tan(lat2)) # latitude reduzida
-    sinU1 <- sin(U1)
-    cosU1 <- cos(U1)
-    sinU2 <- sin(U2)
-    cosU2 <- cos(U2)
-
-    cosSqAlpha <- NULL
-    sinSigma <- NULL
-    cosSigma <- NULL
-    cos2SigmaM <- NULL
-    sigma <- NULL
-
-    lambda <- L
-    lambdaP <- 0
-    iterLimit <- 100
-    while (abs(lambda-lambdaP) > 1e-12 & iterLimit>0) {
-        sinLambda <- sin(lambda)
-        cosLambda <- cos(lambda)
-        sinSigma <- sqrt( (cosU2*sinLambda) * (cosU2*sinLambda) +
-                          (cosU1*sinU2-sinU1*cosU2*cosLambda) * (cosU1*sinU2-sinU1*cosU2*cosLambda) )
-        if (sinSigma==0) return(0)
-        cosSigma <- sinU1*sinU2 + cosU1*cosU2*cosLambda
-        sigma <- atan2(sinSigma, cosSigma)
-        sinAlpha <- cosU1 * cosU2 * sinLambda / sinSigma
-        cosSqAlpha <- 1 - sinAlpha*sinAlpha
-        cos2SigmaM <- cosSigma - 2*sinU1*sinU2/cosSqAlpha
-        if (is.na(cos2SigmaM)) cos2SigmaM <- 0  # Linha equatorial: cosSqAlpha=0
-        C <- f/16*cosSqAlpha*(4+f*(4-3*cosSqAlpha))
-        lambdaP <- lambda
-        lambda <- L + (1-C) * f * sinAlpha *
-            (sigma + C*sinSigma*(cos2SigmaM+C*cosSigma*(-1+2*cos2SigmaM*cos2SigmaM)))
-        iterLimit <- iterLimit - 1
-    }
-    if (iterLimit==0) return(NA)  # A fórmula não convergiu
-    uSq <- cosSqAlpha * (a*a - b*b) / (b*b)
-    A <- 1 + uSq/16384*(4096+uSq*(-768+uSq*(320-175*uSq)))
-    B <- uSq/1024 * (256+uSq*(-128+uSq*(74-47*uSq)))
-    deltaSigma = B*sinSigma*(cos2SigmaM + B/4*(cosSigma*(-1+2*cos2SigmaM^2) -
-                                          B/6*cos2SigmaM*(-3+4*sinSigma^2)*(-3+4*cos2SigmaM^2)))
-    s <- b*A*(sigma-deltaSigma) / 1000
-
-    return(s) # Distância em km
+################################################################################
+# Realizando substituição das distâncias (DIST_VIAG) com base na consulta aos
+# cálculos de distância realizaods com o software QGis, com referência ao
+# centróide das zonas (1977) e das das subzonas (1987 e 1997).
+# O resultado fornecido tem como unidade de medida Metro.
+################################################################################
+# Função que transforma dois números em uma string no formato "001-01",
+# formado constante no mapa de 1997. Sempre com 3 dígitos para zona e
+# 2 para subzona.
+codifica97 <- function(zona, subzona) {
+    codificado = paste(
+            sprintf("%03d", as.integer(trimws(zona))),    # Formato: XXX
+            sprintf("%02d", as.integer(trimws(subzona))), # Formato: XX
+            sep="-"
+        )
+    return(codificado)
+}
+# Formato de codificação do mapa de 87: Zona.Subzona (sem zeros à esquerda)
+codifica87 <- function(zona, subzona) {
+    codificado = paste(
+        trimws(zona),    # Formato: XXX
+        trimws(subzona), # Formato: XX
+        sep="."
+        )
+    return(codificado)
 }
 
-# Aplicando a função gcd.vif no banco de dados od para os anos de 1977, 1987 e 1997.
-# 2007 já tem nos campos COORD_X e COORD_Y as devidas coordenadas. Em 2007
-# só precisamos dividir DIST_VIAG por 1000 para transformar de metros para Km.
-od <- od  %>%
-    # Calculando a distância com a fórmula VIF
-    mutate(DIST_VIAG=ifelse(
-        ANO==4,
-        DIST_VIAG/1000,
-        GcdVif(CO_ORIG_Y, CO_ORIG_X, CO_DEST_Y, CO_DEST_X)
-    )) %>%
-    # Corrigindo distâncias NAN para ZERO.
-    # Isto só acontece quando origem e destino são iguais
-    mutate(DIST_VIAG=
-            ifelse(
-                is.nan(DIST_VIAG),
-                0,
-                DIST_VIAG)
+# Lendo os arquivos com as distâncias:
+matriz77 <- read.table('../CSVs-auxiliares/matriz_distancias_1977.csv', header=TRUE,
+                       sep=',', dec='.')
+matriz87 <- read.table('../CSVs-auxiliares/matriz_distancias_1987.csv', header=TRUE,
+                       sep=',', dec='.')
+matriz97 <- read.table('../CSVs-auxiliares/matriz_distancias_1997.csv', header=TRUE,
+                       sep=',', dec='.')
+
+# Unindo das matrizes de distância de 77, 87 e 97
+## Primeiro adiciona uma nova coluna em cada matriz com o ano da mesma.
+matriz77$ANO_DADO <- 1
+matriz87$ANO_DADO <- 2
+matriz97$ANO_DADO <- 3
+## Agora uni as três numa nova:
+distancias <- rbind(matriz77, matriz87, matriz97)
+
+# Removendo as matrizes de distância de cada um dos anos
+rm(matriz77)
+rm(matriz87)
+rm(matriz97)
+
+# Lendo a base OD mais atual
+od <- read.table('../../../mestrado/mestrado-usp-ODs/banco unico - pols/od-10.csv.bz2',
+                 header=TRUE, sep=';', dec=',',
+                 colClasses = c(
+                     'ID_PESS'='character',
+                     'ID_VIAG'='character',
+                     'ID_DOM'='character',
+                     'ID_FAM'='character')
+        )
+
+# Lendo a OD-08, que contém a distância correta para 2007
+od08 <- read.table('../../../mestrado/mestrado-usp-ODs/banco unico - pols/od-8.csv.bz2',
+                   header=TRUE, sep=';', dec=',',
+                   colClasses = c(
+                       'ID_PESS'='character',
+                       'ID_VIAG'='character',
+                       'ID_DOM'='character',
+                       'ID_FAM'='character')
+        )
+
+# Substintuindo a variável DIST_VIAG em "od" pela DIST_VIAG de "od08"
+od$DIST_VIAG <- od08$DIST_VIAG
+
+# Removendo od08, que agora não é mais necessário:
+rm(od08)
+
+# Gerando variáveis auxiliares de origem e destino para consultar distâncias,
+# seguindo o padrão de cada ano constante nos mapas fornecidos.
+od <- od %>%
+    mutate(ORIGEM=ifelse(ANO=="1",
+                         ZONA_ORIG,
+                         ifelse(ANO=="2",
+                                codifica87(ZONA_ORIG, SUBZONA_ORIG),
+                                ifelse(ANO=="3",
+                                codifica97(ZONA_ORIG, SUBZONA_ORIG),
+                                NA
+                            )
+                         )
+                    )
+    ) %>%
+    mutate(DESTINO=ifelse(ANO=="1",
+                         ZONA_DEST,
+                         ifelse(ANO=="2",
+                                codifica87(ZONA_DEST, SUBZONA_DEST),
+                                ifelse(ANO=="3",
+                                codifica97(ZONA_DEST, SUBZONA_DEST),
+                                NA
+                            )
+                        )
+                    )
     )
 
-#Plotando histograma, por ano, das distâncias viagem
-ggplot(od,aes(x=as.numeric(DIST_VIAG),fill=as.factor(ANO))) +
-    geom_histogram(binwidth=5,position="dodge")
+# Removendo as funções codifica87 e codifica97, que já foram utilizadas
+rm(codifica87)
+rm(codifica97)
+
+# Criando uma coluna chamada "Distance" no dataframe OD, por meio da junção
+# do dataframe OD com o distancias, unindo com base em:
+# ORIGEM == InputID
+# DESTINO == TargetID
+# ANO == ANO_DADO
+od <- left_join(od,
+                distancias,
+                by=c('ORIGEM'='InputID','DESTINO'='TargetID','ANO'='ANO_DADO')
+        )
+
+# Removendo dataframe já utilizado distancias
+rm(distancias)
+
+# Substituindo, para os anos 1977, 1987 e 1997, o valor em DIST_VIAG pelo valor
+# da coluna Distance
+od <- od %>%
+        mutate(DIST_VIAG = ifelse(
+            ANO==4,
+            DIST_VIAG,
+            Distance
+            )
+        )
+
+# Removendo as colunas Distance, ORIGEM e DESTINO (não mais necessárias)
+od$Distance <- NULL
+od$ORIGEM <- NULL
+od$DESTINO <- NULL
+
+##############################
+# Realizando algumas correções
+#
+# Correção 1: Se F_VIAG for igual a zero, então DIST_VIAG receberá NA
+od <- od %>%
+        mutate(DIST_VIAG = ifelse(
+            F_VIAG==0,
+            NA,
+            DIST_VIAG
+            )
+        )
+# Correção 2: Se F_VIAG for igual a 1, mas ZONA_ORIG == ZONA_DEST
+# então DIST_VIAG recebe ZERO
+od <- od %>%
+    mutate(DIST_VIAG = ifelse(
+        ZONA_ORIG==ZONA_DEST,
+        0,
+        DIST_VIAG
+        )
+    )
+# Correção 3: Se F_VIAG for igual a 1, mas:
+# ZONA_ORIG == 0 ou ZONA_ORIG == 999 ou
+# ZONA_DEST == 0 ou ZONA_DEST == 999,
+# então DIST_VIAG receberá NA
+od <- od %>%
+        mutate(DIST_VIAG = ifelse(
+            ZONA_ORIG==0 | ZONA_DEST==0 |
+            ZONA_ORIG==999 | ZONA_DEST==999,
+            NA,
+            DIST_VIAG
+            )
+        )
+
+write.table(od,
+            file="../../../mestrado/mestrado-usp-ODs/banco unico - pols/od-10.csv",
+            sep =';',
+            dec=',',
+            row.names = FALSE)
+
+
+################################################################################
+###                             PLOTS
+################################################################################
+coresSEXO = c("#0072B2", "#D55E00") # Homens, Mulheres
+
+# Plotando distância média por ano e por sexo
+#png(file = "distancia_media_percorrida.png")
+od %>%
+    filter(!is.na(DIST_VIAG)) %>% # Removendo NA's
+    group_by(ANO, SEXO) %>% # Agrupa por ANO e SEXO para sumarizar
+    summarise(distancia.media = mean(DIST_VIAG)) %>% # Calcula a média
+    as.data.frame() %>% # Transforma o resultado num dataframe com ANO, SEXO e distancia.media
+    mutate(
+        ANO = factor(ANO, levels=c(1,2,3,4), labels=c("1977","1987","1997","2007")),
+        SEXO = factor(SEXO, labels=c("MASC","FEM"))
+    ) %>% # Aplica as labels às variáveis ANO e SEXO
+    ggplot(aes(x=ANO, y=distancia.media, fill=SEXO, group=SEXO, colour=SEXO)) +
+        geom_histogram(stat="identity", position="dodge", alpha=0.2) + # Histograma
+        geom_smooth(method=lm, alpha=0.1) + # Reta de ajuste com "lm"
+        ylab("Distância Média (m)") + # Configurando título do eixo Y
+        xlab("Ano") + # configurando título do eixo X
+        ggtitle("Distância média de viagem, por sexo e ano") + # Configurando título
+        scale_colour_manual(values = coresSEXO) + # Configurando cores
+        scale_fill_manual(values = coresSEXO) # Configurando cores
+#dev.off()
+
+# Plotando distâncias por ano e por sexo (1 plot com 8 linhas)
+#png(file = "distribuicao_de_distancias.png")
+od %>%
+    filter(!is.na(DIST_VIAG)) %>% # Removendo DIST_VIAG == NA
+    mutate(
+        ANO = factor(ANO,
+                     levels=c(1,2,3,4),
+                     labels=c("1977","1987","1997","2007")
+                ),
+        SEXO = factor(SEXO, labels=c("MASC","FEM"))
+    ) %>% # Aplica as labels às variáveis ANO e SEXO
+    filter(
+        DIST_VIAG < quantile(DIST_VIAG, 0.75)
+    ) %>% # Filtrando no quantil 90%
+    ggplot(
+        aes(x=DIST_VIAG, fill=NULL, colour=interaction(SEXO,ANO), group=interaction(SEXO,ANO))
+    ) + geom_density(alpha=0.2) +
+    ylab("Densidade de viagens") +
+    xlab("Distância da viagem") +
+    ggtitle("Distribuição de viagens por sexo e ano (3 quartis)") # Configurando título
+#dev.off()
+
+# Plotando distâncias por ano e por sexo (8 plots em quadro)
+#png(file = "distribuicao_de_distancias.png")
+od %>%
+    filter(!is.na(DIST_VIAG)) %>% # Removendo DIST_VIAG == NA
+    mutate(
+        ANO = factor(ANO,
+                     levels=c(1,2,3,4),
+                     labels=c("1977","1987","1997","2007")
+        ),
+        SEXO = factor(SEXO, labels=c("MASC","FEM"))
+    ) %>% # Aplica as labels às variáveis ANO e SEXO
+    filter(
+        DIST_VIAG < quantile(DIST_VIAG, 0.75)
+    ) %>% # Filtrando no quantil 90%
+    ggplot(
+        aes(x=DIST_VIAG, fill=SEXO, colour=SEXO)
+    ) + geom_density(alpha=0.2) +
+    facet_grid(SEXO ~ ANO) +
+    ylab("Densidade de viagens") +
+    xlab("Distância da viagem") +
+    ggtitle("Distribuição de viagens por sexo e ano (3 quartis)") + # Configurando título
+    scale_colour_manual(values = coresSEXO) + # Configurando cores
+    scale_fill_manual(values = coresSEXO) # Configurando cores
+#dev.off()
+
+# ################# TESTES ##########################
+# # 1977
+# teste %>% filter(ANO==1) %>% select(F_VIAG) %>% table() %>% as.data.frame()
+#
+# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG!=0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==0, ZONA_DEST!=0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG==0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==0, ZONA_DEST==0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG!=0, ZONA_DEST!=0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST!=0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG!=0, ZONA_DEST==0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% nrow()
+#
+# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG!=0, ZONA_DEST!=0) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG!=0, ZONA_DEST!=0) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST!=0) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST!=0) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG!=0, ZONA_DEST==0) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG!=0, ZONA_DEST==0) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
+#
+# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG!=0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==1, ZONA_DEST!=0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG==0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==1, ZONA_DEST==0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG==0, ZONA_DEST!=0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST==0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG==0, ZONA_DEST==0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% nrow()
+#
+# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG==0, ZONA_DEST!=0) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG==0, ZONA_DEST!=0) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG==0, ZONA_DEST==0) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG==0, ZONA_DEST==0) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST==0) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
+# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST==0) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
+#
+# # 1987
+# teste %>% filter(ANO==2) %>% select(F_VIAG) %>% table() %>% as.data.frame()
+#
+# teste %>% filter(ANO==2, F_VIAG==0, ZONA_ORIG==0) %>% nrow()
+# teste %>% filter(ANO==2, F_VIAG==0, ZONA_DEST==0) %>% nrow()
+# teste %>% filter(ANO==2, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% nrow()
+# teste %>% filter(ANO==2, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
+# teste %>% filter(ANO==2, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
+#
+# teste %>% filter(ANO==2, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0) %>% nrow()
+# teste %>% filter(ANO==2, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% nrow()
+# teste %>% filter(ANO==2, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
+# teste %>% filter(ANO==2, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
+# teste %>% filter(ANO==2, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% nrow()
+# teste %>% filter(ANO==2, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
+# teste %>% filter(ANO==2, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
+#
+# # 1997
+# teste %>% filter(ANO==3) %>% select(F_VIAG) %>% table() %>% as.data.frame()
+#
+# teste %>% filter(ANO==3, F_VIAG==0, ZONA_ORIG==0) %>% nrow()
+# teste %>% filter(ANO==3, F_VIAG==0, ZONA_DEST==0) %>% nrow()
+# teste %>% filter(ANO==3, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% nrow()
+# teste %>% filter(ANO==3, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
+# teste %>% filter(ANO==3, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
+#
+# teste %>% filter(ANO==3, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0) %>% nrow()
+# teste %>% filter(ANO==3, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% nrow()
+# teste %>% filter(ANO==3, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
+# teste %>% filter(ANO==3, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
+# teste %>% filter(ANO==3, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% nrow()
+# teste %>% filter(ANO==3, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
+# teste %>% filter(ANO==3, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
+#
+# # 2007
+# teste %>% filter(ANO==4) %>% select(F_VIAG) %>% table() %>% as.data.frame()
+#
+# teste %>% filter(ANO==4, F_VIAG==0, ZONA_ORIG==0) %>% nrow()
+# teste %>% filter(ANO==4, F_VIAG==0, ZONA_DEST==0) %>% nrow()
+# teste %>% filter(ANO==4, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% nrow()
+# teste %>% filter(ANO==4, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
+# teste %>% filter(ANO==4, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% filter(!is.na(Distance),  Distance!=0) %>% nrow()
+#
+# teste %>% filter(ANO==4, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0) %>% nrow()
+# teste %>% filter(ANO==4, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% nrow()
+# teste %>% filter(ANO==4, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
+# teste %>% filter(ANO==4, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% filter(!is.na(Distance), Distance!=0) %>% nrow()
+# teste %>% filter(ANO==4, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% nrow()
+# teste %>% filter(ANO==4, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
+# teste %>% filter(ANO==4, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
