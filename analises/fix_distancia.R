@@ -153,6 +153,7 @@ od <- od %>%
 # então DIST_VIAG recebe ZERO
 od <- od %>%
     mutate(DIST_VIAG = ifelse(
+        F_VIAG==1 &
         ZONA_ORIG==ZONA_DEST,
         0,
         DIST_VIAG
@@ -164,8 +165,9 @@ od <- od %>%
 # então DIST_VIAG receberá NA
 od <- od %>%
         mutate(DIST_VIAG = ifelse(
+            F_VIAG==1 & (
             ZONA_ORIG==0 | ZONA_DEST==0 |
-            ZONA_ORIG==999 | ZONA_DEST==999,
+            ZONA_ORIG==999 | ZONA_DEST==999),
             NA,
             DIST_VIAG
             )
@@ -251,97 +253,66 @@ od %>%
     scale_fill_manual(values = coresSEXO) # Configurando cores
 #dev.off()
 
-# ################# TESTES ##########################
-# # 1977
-# teste %>% filter(ANO==1) %>% select(F_VIAG) %>% table() %>% as.data.frame()
+################# TESTES ##########################
+testa_valido <- function(ZONAS, CASE=TRUE, retorno="vetor") {
+    conta = sapply(ZONAS, function(ZONA){
+        # Checa se a ZONA passada é nula, igual a zero ou igual a 999
+        if (ZONA!=0 & ZONA!=999 & !is.na(ZONA)) {
+            return(CASE)
+        } else {
+            return(!CASE)
+        }
+    })
+    if(retorno=="soma") {
+        return(sum(conta))
+    } else {
+        return(conta)
+    }
+}
+
 #
-# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG!=0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==0, ZONA_DEST!=0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG==0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==0, ZONA_DEST==0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG!=0, ZONA_DEST!=0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST!=0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG!=0, ZONA_DEST==0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% nrow()
-#
-# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG!=0, ZONA_DEST!=0) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG!=0, ZONA_DEST!=0) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST!=0) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST!=0) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG!=0, ZONA_DEST==0) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG!=0, ZONA_DEST==0) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
-#
-# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG!=0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==1, ZONA_DEST!=0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG==0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==1, ZONA_DEST==0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG==0, ZONA_DEST!=0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST==0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG==0, ZONA_DEST==0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% nrow()
-#
-# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG==0, ZONA_DEST!=0) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG==0, ZONA_DEST!=0) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG==0, ZONA_DEST==0) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG==0, ZONA_DEST==0) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST==0) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
-# teste %>% filter(ANO==1, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST==0) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
-#
-# # 1987
-# teste %>% filter(ANO==2) %>% select(F_VIAG) %>% table() %>% as.data.frame()
-#
-# teste %>% filter(ANO==2, F_VIAG==0, ZONA_ORIG==0) %>% nrow()
-# teste %>% filter(ANO==2, F_VIAG==0, ZONA_DEST==0) %>% nrow()
-# teste %>% filter(ANO==2, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% nrow()
-# teste %>% filter(ANO==2, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
-# teste %>% filter(ANO==2, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
-#
-# teste %>% filter(ANO==2, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0) %>% nrow()
-# teste %>% filter(ANO==2, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% nrow()
-# teste %>% filter(ANO==2, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
-# teste %>% filter(ANO==2, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
-# teste %>% filter(ANO==2, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% nrow()
-# teste %>% filter(ANO==2, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
-# teste %>% filter(ANO==2, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
-#
-# # 1997
-# teste %>% filter(ANO==3) %>% select(F_VIAG) %>% table() %>% as.data.frame()
-#
-# teste %>% filter(ANO==3, F_VIAG==0, ZONA_ORIG==0) %>% nrow()
-# teste %>% filter(ANO==3, F_VIAG==0, ZONA_DEST==0) %>% nrow()
-# teste %>% filter(ANO==3, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% nrow()
-# teste %>% filter(ANO==3, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
-# teste %>% filter(ANO==3, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
-#
-# teste %>% filter(ANO==3, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0) %>% nrow()
-# teste %>% filter(ANO==3, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% nrow()
-# teste %>% filter(ANO==3, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
-# teste %>% filter(ANO==3, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
-# teste %>% filter(ANO==3, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% nrow()
-# teste %>% filter(ANO==3, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
-# teste %>% filter(ANO==3, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
-#
-# # 2007
-# teste %>% filter(ANO==4) %>% select(F_VIAG) %>% table() %>% as.data.frame()
-#
-# teste %>% filter(ANO==4, F_VIAG==0, ZONA_ORIG==0) %>% nrow()
-# teste %>% filter(ANO==4, F_VIAG==0, ZONA_DEST==0) %>% nrow()
-# teste %>% filter(ANO==4, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% nrow()
-# teste %>% filter(ANO==4, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
-# teste %>% filter(ANO==4, F_VIAG==0, ZONA_ORIG==0, ZONA_DEST==0) %>% filter(!is.na(Distance),  Distance!=0) %>% nrow()
-#
-# teste %>% filter(ANO==4, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0) %>% nrow()
-# teste %>% filter(ANO==4, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% nrow()
-# teste %>% filter(ANO==4, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
-# teste %>% filter(ANO==4, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG!=ZONA_DEST) %>% filter(!is.na(Distance), Distance!=0) %>% nrow()
-# teste %>% filter(ANO==4, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% nrow()
-# teste %>% filter(ANO==4, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% filter(is.na(Distance) | Distance==0) %>% nrow()
-# teste %>% filter(ANO==4, F_VIAG==1, ZONA_ORIG!=0, ZONA_DEST!=0, ZONA_ORIG==ZONA_DEST) %>% filter(!is.na(Distance), Distance !=0) %>% nrow()
+# Gerando as estatísticas de contagem
+a <- od %>%
+    mutate(
+        ANO=factor(ANO, labels=c("1977","1987","1997","2007")),
+        F_VIAG=as.factor(F_VIAG)) %>%
+    mutate(
+        ZONA_ORIG_TESTADO=testa_valido(ZONA_ORIG),
+        ZONA_DEST_TESTADO=testa_valido(ZONA_DEST)
+    ) %>%
+    group_by(ANO, F_VIAG) %>%
+    summarise(
+        CASOS_F_VIAG         = length(F_VIAG),
+        ZO_VAL               = testa_valido(ZONA_ORIG, TRUE,  "soma"),
+        ZO_INV               = testa_valido(ZONA_ORIG, FALSE, "soma"),
+        ZD_VAL               = testa_valido(ZONA_DEST, TRUE,  "soma"),
+        ZD_INV               = testa_valido(ZONA_DEST, FALSE, "soma"),
+        ZO_V_e_ZD_V          = sum( ZONA_ORIG_TESTADO &  ZONA_DEST_TESTADO),
+        ZO_V_e_ZD_I          = sum( ZONA_ORIG_TESTADO & !ZONA_DEST_TESTADO),
+        ZO_I_e_ZD_V          = sum(!ZONA_ORIG_TESTADO &  ZONA_DEST_TESTADO),
+        ZO_I_e_ZD_I          = sum(!ZONA_ORIG_TESTADO & !ZONA_DEST_TESTADO),
+        ZO_igual_ZD          = sum( ZONA_ORIG_TESTADO &  ZONA_DEST_TESTADO & ZONA_ORIG==ZONA_DEST),
+        ZO_dif_ZD            = sum( ZONA_ORIG_TESTADO &  ZONA_DEST_TESTADO & ZONA_ORIG!=ZONA_DEST),
+        ZO_igual_ZD_DIST_NA  = sum( ZONA_ORIG_TESTADO &  ZONA_DEST_TESTADO & ZONA_ORIG==ZONA_DEST &  is.na(DIST_VIAG)),
+        ZO_igual_ZD_DIST_NNA = sum( ZONA_ORIG_TESTADO &  ZONA_DEST_TESTADO & ZONA_ORIG==ZONA_DEST & !is.na(DIST_VIAG)),
+        ZO_dif_ZD_DIST_NA    = sum( ZONA_ORIG_TESTADO &  ZONA_DEST_TESTADO & ZONA_ORIG!=ZONA_DEST &  is.na(DIST_VIAG)),
+        ZO_dif_ZD_DIST_NNA   = sum( ZONA_ORIG_TESTADO &  ZONA_DEST_TESTADO & ZONA_ORIG!=ZONA_DEST & !is.na(DIST_VIAG)),
+        ZO_V_e_ZD_I_DIST_NA  = sum( ZONA_ORIG_TESTADO & !ZONA_DEST_TESTADO &  is.na(DIST_VIAG)),
+        ZO_V_e_ZD_I_DIST_NNA = sum( ZONA_ORIG_TESTADO & !ZONA_DEST_TESTADO & !is.na(DIST_VIAG)),
+        ZO_I_e_ZD_V_DIST_NA  = sum(!ZONA_ORIG_TESTADO &  ZONA_DEST_TESTADO &  is.na(DIST_VIAG)),
+        ZO_I_e_ZD_V_DIST_NNA = sum(!ZONA_ORIG_TESTADO &  ZONA_DEST_TESTADO & !is.na(DIST_VIAG)),
+        ZO_I_e_ZD_I_DIST_NA  = sum(!ZONA_ORIG_TESTADO & !ZONA_DEST_TESTADO &  is.na(DIST_VIAG)),
+        ZO_I_e_ZD_I_DIST_NNA = sum(!ZONA_ORIG_TESTADO & !ZONA_DEST_TESTADO & !is.na(DIST_VIAG))
+    )
+
+# Para visualizar:
+a
+# ou (invertendo a tabela)
+as.data.frame(t(a))
+
+
+# Casos de Zona_origem e Zona_destino problemáticos
+# 1987 (188)
+# od %>% filter(ANO=="2", F_VIAG==1, testa_valido(ZONA_ORIG), testa_valido(ZONA_DEST), ZONA_ORIG!=ZONA_DEST, is.na(DIST_VIAG)) %>% select(ZONA_ORIG, ZONA_DEST)
+# 1997 (16808)
+# od %>% filter(ANO=="3", F_VIAG==1, testa_valido(ZONA_ORIG), testa_valido(ZONA_DEST), ZONA_ORIG!=ZONA_DEST, is.na(DIST_VIAG)) %>% select(ZONA_ORIG, ZONA_DEST)
