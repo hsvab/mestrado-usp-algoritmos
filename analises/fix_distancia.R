@@ -34,11 +34,11 @@ codifica87 <- function(zona, subzona) {
 }
 
 # Lendo os arquivos com as distâncias:
-matriz77 <- read.table('../CSVs-auxiliares/matriz_distancias_1977.csv', header=TRUE,
+matriz77 <- read.table('../CSVs-auxiliares/matriz_distancias_1977.csv.bz2', header=TRUE,
                        sep=',', dec='.')
-matriz87 <- read.table('../CSVs-auxiliares/matriz_distancias_1987.csv', header=TRUE,
+matriz87 <- read.table('../CSVs-auxiliares/matriz_distancias_1987.csv.bz2', header=TRUE,
                        sep=',', dec='.')
-matriz97 <- read.table('../CSVs-auxiliares/matriz_distancias_1997.csv', header=TRUE,
+matriz97 <- read.table('../CSVs-auxiliares/matriz_distancias_1997.csv.bz2', header=TRUE,
                        sep=',', dec='.')
 
 # Unindo das matrizes de distância de 77, 87 e 97
@@ -53,32 +53,6 @@ distancias <- rbind(matriz77, matriz87, matriz97)
 rm(matriz77)
 rm(matriz87)
 rm(matriz97)
-
-# Lendo a base OD mais atual
-od <- read.table('../../../mestrado/mestrado-usp-ODs/banco unico - pols/od-10.csv.bz2',
-                 header=TRUE, sep=';', dec=',',
-                 colClasses = c(
-                     'ID_PESS'='character',
-                     'ID_VIAG'='character',
-                     'ID_DOM'='character',
-                     'ID_FAM'='character')
-        )
-
-# Lendo a OD-08, que contém a distância correta para 2007
-od08 <- read.table('../../../mestrado/mestrado-usp-ODs/banco unico - pols/od-8.csv.bz2',
-                   header=TRUE, sep=';', dec=',',
-                   colClasses = c(
-                       'ID_PESS'='character',
-                       'ID_VIAG'='character',
-                       'ID_DOM'='character',
-                       'ID_FAM'='character')
-        )
-
-# Substintuindo a variável DIST_VIAG em "od" pela DIST_VIAG de "od08"
-od$DIST_VIAG <- od08$DIST_VIAG
-
-# Removendo od08, que agora não é mais necessário:
-rm(od08)
 
 # Gerando variáveis auxiliares de origem e destino para consultar distâncias,
 # seguindo o padrão de cada ano constante nos mapas fornecidos.
@@ -174,7 +148,7 @@ od <- od %>%
         )
 
 write.table(od,
-            file="../../../mestrado/mestrado-usp-ODs/banco unico - pols/od-10.csv",
+            file="../../../mestrado/mestrado-usp-ODs/banco unico - pols/od-11.csv",
             sep =';',
             dec=',',
             row.names = FALSE)
