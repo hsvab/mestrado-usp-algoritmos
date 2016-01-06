@@ -1,27 +1,27 @@
 library(dplyr)
 setwd("~/haydee/mestrado/mestrado-usp-algoritmos/analises")
-od_77 <- read.table('../../mestrado-usp-ODs/bancos-separados/1977_od.csv', sep=';', dec=',', header=TRUE,
+od_77 <- read.table('../../mestrado-usp-ODs/bancos-separados/OD_1977_processado.csv.bz2', sep=';', dec=',', header=TRUE,
                         colClasses = c(
                         'ID_PESS'='character',
                         'ID_VIAG'='character',
                         'ID_DOM'='character',
                         'ID_FAM'='character')
 )
-od_87 <- read.table('../../mestrado-usp-ODs/bancos-separados/1987_od.csv', sep=';', dec=',', header=TRUE,
+od_87 <- read.table('../../mestrado-usp-ODs/bancos-separados/OD_1987_processado.csv.bz2', sep=';', dec=',', header=TRUE,
                         colClasses = c(
                         'ID_PESS'='character',
                         'ID_VIAG'='character',
                         'ID_DOM'='character',
                         'ID_FAM'='character')
 )
-od_97 <- read.table('../../mestrado-usp-ODs/bancos-separados/1997_od.csv', sep=';', dec=',', header=TRUE,
+od_97 <- read.table('../../mestrado-usp-ODs/bancos-separados/OD_1997_processado.csv.bz2', sep=';', dec=',', header=TRUE,
                         colClasses = c(
                         'ID_PESS'='character',
                         'ID_VIAG'='character',
                         'ID_DOM'='character',
                         'ID_FAM'='character')
 )
-od_07 <- read.table('../../mestrado-usp-ODs/bancos-separados/2007_od.csv', sep=';', dec=',', header=TRUE,
+od_07 <- read.table('../../mestrado-usp-ODs/bancos-separados/OD_2007_processado.csv.bz2', sep=';', dec=',', header=TRUE,
                         colClasses = c(
                         'ID_PESS'='character',
                         'ID_VIAG'='character',
@@ -30,14 +30,14 @@ od_07 <- read.table('../../mestrado-usp-ODs/bancos-separados/2007_od.csv', sep='
 )
 
 #Corrigindo tipo das variáveis entre os anos
-#campos77 = sapply(od_77,typeof)
-#campos87 = sapply(od_87,typeof)
-#campos97 = sapply(od_97,typeof)
-#campos07 = sapply(od_07,typeof)
-#teste <- data.frame(campos77, campos87, campos97, campos07)
-#teste$CHECK01 <-    campos77==campos87 &
-#                    campos87==campos97 &
-#                    campos97==campos07
+campos77 = sapply(od_77,typeof)
+campos87 = sapply(od_87,typeof)
+campos97 = sapply(od_97,typeof)
+campos07 = sapply(od_07,typeof)
+teste <- data.frame(campos77, campos87, campos97, campos07)
+teste$CHECK01 <-    campos77==campos87 &
+                    campos87==campos97 &
+                    campos97==campos07
 
 ## 77
 od_77$DIA_SEM <- as.integer(od_77$DIA_SEM)
@@ -73,6 +73,8 @@ od_07$CO_TRAB1_X <- as.integer(od_07$CO_TRAB1_X)
 od_07$CO_TRAB2_X <- as.integer(od_07$CO_TRAB2_X)
 od_07$CO_ORIG_X <-  as.integer(od_07$CO_ORIG_X)
 od_07$CO_DEST_X <-  as.integer(od_07$CO_DEST_X)
+od_07$REN_IND <- as.double(od_07$REN_IND)
+od_07$VALOR_EST_AUTO <- as.double(od_07$VALOR_EST_AUTO)
 
 od <- rbind(od_77, od_87, od_97, od_07)
 

@@ -16,7 +16,7 @@ od$DIA_SEM <- factor(od$DIA_SEM,
                              'Sexta-feira'))
 
 od$SEXO <- factor(od$SEXO,
-                  levels=c(1,2),
+                  levels=c(0,1),
                   labels=c("MASC","FEM"))
 
 od$TIPO_DOM <- factor(od$TIPO_DOM,
