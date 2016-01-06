@@ -315,11 +315,14 @@ def passo_ano(passo, df):
 
 def passo_dia_sem(passo, df):
     """
-    Apenas verificar os valores existentes
+    Assumindo que as respostas iguais a **1** são
+        referentes à segunda-feira (2) e
+        valores iguais a **7** são referentes à
+        sexta-feira (6)
+    
     # ####Categorias:
     # Valor|Descrição
     # -----|-----
-    # 0|Não disponível
     # 2|Segunda-Feira
     # 3|Terça-Feira
     # 4|Quarta-Feira
@@ -331,6 +334,9 @@ def passo_dia_sem(passo, df):
     :return: retorna o dataframe modificado
     """
     log_tela.info("### PASSO " + str(passo) + " - DIA_SEM")
+    
+    # Substituindo **0** por **None**
+    df.loc[df['DIA_SEM']==0,'DIA_SEM'] = None
     
     # Alocando que respondeu "1" para Segunda-feira (2)
     df.loc[df['DIA_SEM']==1,'DIA_SEM'] = 2
@@ -417,6 +423,9 @@ def passo_zona_dom(passo, df):
     :return: sem retorno
     """
     log_tela.info("### PASSO " + str(passo) + " - ZONA_DOM")
+    
+    # Substituindo valor 0 por None
+    df.loc[df['ZONA_DOM']==0,'ZONA_DOM'] = None
 
     # Verificando intervalo de valores - condições:
          # "ZONA_DOM >= 1" E "ZONA_DOM <= 254"
@@ -440,6 +449,9 @@ def passo_subzona_dom(passo, df):
     :return: sem retorno
     """
     log_tela.info("### PASSO " + str(passo) + " - SUBZONA_DOM")
+    
+    # Substituindo valor 0 por None
+    df.loc[df['SUBZONA_DOM']==0,'SUBZONA_DOM'] = None
 
     # Verificando intervalo de valores - condições:
         # "SUBZONA_DOM >= 1" E "SUBZONA_DOM <= 9"
@@ -463,6 +475,9 @@ def passo_mun_dom(passo, df):
     :return: sem retorno
     """
     log_tela.info("### PASSO " + str(passo) + " - MUN_DOM")
+    
+    # Substituindo valor 0 por None
+    df.loc[df['MUN_DOM']==0,'MUN_DOM'] = None
 
     # Verificando intervalo de valores - condições:
         # "MUN_DOM >= 1" E "MUN_DOM <= 38"
@@ -512,21 +527,22 @@ def passo_fe_dom(passo, df):
 
 def passo_tipo_dom(passo, df):
     """
-    Nada a ser realizado
-    # ####Categorias anteriores / novas
+    Substituir **0** por **None (NA)**
+    Substituir **2** por **0**
+    
+    # ####Categorias anteriores
     # Valor | Descrição
     # ----|----
     # 1|Individual
     # 2|Coletivo
 
-    # ####Categorias anteriores / novas
+    # ####Categorias novas
     # Valor | Descrição
     # ----|----
-    # 0|Não respondeu
+    # 0|Coletivo
     # 1|Particular
-    # 2|Coletivo
     
-    [Teste: Checar se existe algum número < 0 ou > 2.
+    [Teste: Checar se existe algum número < 0 ou > 1.
         Se encontrar, retornar erro indicando em qual linha.]
     :param passo: Número do passo atual para registro/log
     :param df:
@@ -534,9 +550,12 @@ def passo_tipo_dom(passo, df):
     """
     log_tela.info("### PASSO " + str(passo) + " - TIPO_DOM")
 
+    df.loc[df['TIPO_DOM']==0,'TIPO_DOM'] = None
+    df.loc[df['TIPO_DOM']==2,'TIPO_DOM'] = 0
+    
     # Verificando intervalo de valores - condições:
-        # "TIPO_DOM >= 0" E "TIPO_DOM <= 2"
-    verifica_range(df, 'TIPO_DOM', 0, 2)
+        # "TIPO_DOM >= 0" E "TIPO_DOM <= 1"
+    verifica_dummy(df, 'TIPO_DOM')
     log_output.info('\n\n===============================================\n')
     
     return df
@@ -618,6 +637,7 @@ def passo_cond_mora(passo, df):
     Substituir valores da coluna "COND_MORA"
     
     * Substituir todos valores **2** por **0**
+    * Substituir todos valores **0** por **None**
     * Substituir todos valores **4** por **2**
     * Substituir todos valores **3** por **5**
     * Substituir todos valores **1** por **3**
@@ -636,7 +656,6 @@ def passo_cond_mora(passo, df):
 
     Valor|Descrição
     ----|----
-    0|Não respondeu
     1|Alugada
     2|Própria
     3|Outros
@@ -651,6 +670,8 @@ def passo_cond_mora(passo, df):
 
     # Substituindo valor 2 por 0
     df.loc[df['COND_MORA']==2,'COND_MORA'] = 0
+    # Substituindo valor 0 por None
+    df.loc[df['COND_MORA']==0,'COND_MORA'] = None
     # Substituindo valor 4 por 2
     df.loc[df['COND_MORA']==4,'COND_MORA'] = 2
     # Substituindo valor 3 por 5
@@ -661,8 +682,8 @@ def passo_cond_mora(passo, df):
     df.loc[df['COND_MORA']==5,'COND_MORA'] = 1
 
     # Verificando intervalo de valores - condições:
-        # "COND_MORA >= 0" E "COND_MORA <= 3"
-    verifica_range(df, 'COND_MORA', 0, 3)
+        # "COND_MORA >= 1" E "COND_MORA <= 3"
+    verifica_range(df, 'COND_MORA', 1, 3)
     log_output.info('\n\n===============================================\n')
 
     return df
@@ -908,15 +929,15 @@ def passo_sexo(passo, df):
     # ####Categorias anteriores
     # Valor|Descrição
     # ----|----
+    # 0|Não Respondeu (-> None)
     # 1|Masculino
     # 2|Feminino
     
     # ####Categorias novas
     # Valor|Descrição
     # ----|----
-    # 0|Não Respondeu
-    # 1|Masculino
-    # 2|Feminino
+    # 0|Masculino
+    # 1|Feminino
     
     [Teste: Checar se existe algum número diferente de 0 ou 1.
         Se encontrar, retornar erro indicando em qual linha.]
@@ -926,9 +947,16 @@ def passo_sexo(passo, df):
     """
     log_tela.info("### PASSO " + str(passo) + " - SEXO")
 
+    # Substituindo valor 0 por None
+    df.loc[df['SEXO']==0,'SEXO'] = None
+    # Substituindo valor 1 por 0
+    df.loc[df['SEXO']==1,'SEXO'] = 0
+    # Substituindo valor 2 por 1
+    df.loc[df['SEXO']==2,'SEXO'] = 1
+    
     # Verificando intervalo de valores - condições:
-        # "SEXO >= 0" E "SEXO <= 2"
-    verifica_range(df, 'SEXO', 0, 2)
+        # "SEXO >= 0" E "SEXO <= 1"
+    verifica_dummy(df, 'SEXO')
     log_output.info('\n\n===============================================\n')
     
     return df
@@ -942,6 +970,7 @@ def passo_grau_instr(passo, df):
     * Substituir todos valores **3** por **2**
     * Substituir todos valores **4** por **3**
     * Substituir todos valores **5** por **4**
+    * Substituir todos valores **0** por **None**
 
     #### Categorias anteriores:
     Valor|Descrição
@@ -956,13 +985,12 @@ def passo_grau_instr(passo, df):
     #### Categorias novas
     Valor|Descrição
     ----|----
-    0|Não declarou
     1|Não-Alfabetizado/Fundamental Incompleto
     2|Fundamental Completo/Médio Incompleto
     3|Médio Completo/Superior Incompleto
     4|Superior completo
     
-    [Teste: Checar se existe algum número < 0 ou > 4.
+    [Teste: Checar se existe algum número < 1 ou > 4.
         Se encontrar, retornar erro indicando em qual linha.]
     :param passo: Número do passo atual para registro/log
     :param df:
@@ -978,10 +1006,12 @@ def passo_grau_instr(passo, df):
     df.loc[df['GRAU_INSTR']==4,'GRAU_INSTR'] = 3
     # Substituindo valor 5 por 4
     df.loc[df['GRAU_INSTR']==5,'GRAU_INSTR'] = 4
+    # Substituindo valor 0 por None
+    df.loc[df['GRAU_INSTR']==0,'GRAU_INSTR'] = None
 
     # Verificando intervalo de valores - condições:
-        # "GRAU_INSTR >= 0" E "GRAU_INSTR <= 4"
-    verifica_range(df, 'GRAU_INSTR', 0, 4)
+        # "GRAU_INSTR >= 1" E "GRAU_INSTR <= 4"
+    verifica_range(df, 'GRAU_INSTR', 1, 4)
     log_output.info('\n\n===============================================\n')
 
     return df
@@ -992,7 +1022,7 @@ def passo_ocup(passo, df):
     Substituir valores da coluna "OCUP"
     
     Somar 10 em todos valores.
-    Substituir todos valores **10** por **0**
+    Substituir todos valores **10** por **None**
     Substituir todos valores **11** por **7**
     Substituir todos valores **12** por **6**
     Substituir todos valores **13** por **3**
@@ -1023,7 +1053,7 @@ def passo_ocup(passo, df):
     # 6|Dona de casa
     # 7|Estudante
     
-    [Teste: Checar se existe algum número < 0 ou > 7.
+    [Teste: Checar se existe algum número < 1 ou > 7.
         Se encontrar, retornar erro indicando em qual linha.]
     :param passo: Número do passo atual para registro/log
     :param df:
@@ -1032,8 +1062,8 @@ def passo_ocup(passo, df):
     log_tela.info("### PASSO " + str(passo) + " - OCUP")
 
     df['OCUP'] = df['OCUP'] + 10
-    # Substituindo valor 10 por 0
-    df.loc[df['OCUP']==10,'OCUP'] = 0
+    # Substituindo valor 10 por None
+    df.loc[df['OCUP']==10,'OCUP'] = None
     # Substituindo valor 11 por 7
     df.loc[df['OCUP']==11,'OCUP'] = 7
     # Substituindo valor 12 por 6
@@ -1072,7 +1102,6 @@ def passo_setor_ativ(passo, df):
     ####Categorias novas
     Valor|Descrição
     ----|----
-    0|Não respondeu
     1|Agrícola
     2|Construção Civil
     3|Indústria
@@ -1100,6 +1129,9 @@ def passo_setor_ativ(passo, df):
     # Esta variável out não é utilizada para nada além de evitar um
     # monte de output que não será utilizado e que é gerado pelo método apply.
     out = df_setor.apply(setor_aux, axis=1)
+    
+    # Substituindo valor 0 por None
+    df.loc[df['SETOR_ATIV']==0,'SETOR_ATIV'] = None
 
     #  Verificando intervalo de valores - condições:
         # "SETOR_ATIV >= 0" E "SETOR_ATIV <= 9"
@@ -1128,10 +1160,9 @@ def passo_cd_renind(passo, df):
     """
     Substituir valores da coluna "CD_RENIND"
 
-    * Substituir todos valores **3** por **4**
-    * Substituir todos valores **2** por **0**
-    * Substituir todos valores **1** por **2**
-    * Substituir todos valores **4** por **1**
+    * Substituir todos valores **2** por None
+    * Substituir todos valores **1** por **0**
+    * Substituir todos valores **3** por **1**
 
     #### Categorias anteriores:
     Valor|Descrição
@@ -1140,14 +1171,13 @@ def passo_cd_renind(passo, df):
     2|Não Declarou
     3|Declarou
 
-    #### Categorias novas
+    ####Categorias novas
     Valor|Descrição
-    ----|----
-    0|Não declarou
-    1|Tem renda
-    2|Não tem renda
+    -----|-------------
+    0    |Não tem renda
+    1    |Tem renda
     
-    [Teste: Checar se existe algum número < 0 ou > 2.
+    [Teste: Checar se existe algum número < 0 ou > 1.
         Se encontrar, retornar erro indicando em qual linha.]
     :param passo: Número do passo atual para registro/log
     :param df:
@@ -1155,14 +1185,13 @@ def passo_cd_renind(passo, df):
     """
     log_tela.info("### PASSO " + str(passo) + " - CD_RENIND")
     
-    df.loc[df['CD_RENIND']==3,'CD_RENIND'] = 4
-    df.loc[df['CD_RENIND']==2,'CD_RENIND'] = 0
-    df.loc[df['CD_RENIND']==1,'CD_RENIND'] = 2
-    df.loc[df['CD_RENIND']==4,'CD_RENIND'] = 1
+    df.loc[df['CD_RENIND']==2,'CD_RENIND'] = None
+    df.loc[df['CD_RENIND']==1,'CD_RENIND'] = 0
+    df.loc[df['CD_RENIND']==3,'CD_RENIND'] = 1
     
     # Verificando intervalo de valores - condições:
-        # "CD_RENIND >= 0" E "CD_RENIND <= 2"
-    verifica_range(df, 'CD_RENIND', 0, 2)
+        # "CD_RENIND >= 0" E "CD_RENIND <= 1"
+    verifica_dummy(df, 'CD_RENIND')
     log_output.info('\n\n===============================================\n')
     
     return df
@@ -1209,7 +1238,8 @@ def passo_estuda(passo, df):
     
     # Substituindo todos que declararam zona escola diferente de zero
         # com campo ESTUDA igual a 1.
-    df.loc[df['ZONA_ESC'] != 0, 'ESTUDA'] = 1
+    df.loc[(df['ZONA_ESC'] != 0)&
+           (df['ZONA_ESC'].notnull()), 'ESTUDA'] = 1
     
     verifica_dummy(df, 'ESTUDA')
     log_output.info('\n\n===============================================\n')
@@ -1250,16 +1280,13 @@ passo_modo4|OK
 passo_modo_prin|OK
 passo_tipo_est_auto|OK
 passo_valor_est_auto|OK
-passo_dist_viag|OK
 passo_tot_viag|OK
 
-Obs: O passo_dist_viag deve ser executado após os passos que calculam as coordenadas.
-
-Obs2: O passo_tot_viag só deve ser executado após a produção dos ID's e NO's.
+Obs: O passo_tot_viag só deve ser executado após a produção dos ID's e NO's.
 
 
 ```python
-log_tela.info('Definindo as funções da viagem')
+log_tela.info('Definindo funções referentes às viagens')
 log_output.info('\n\n===============================================\n')
 
 
@@ -1314,6 +1341,9 @@ def passo_zona_esc(passo, df):
     :return: Sem retorno
     """
     log_tela.info("### PASSO " + str(passo) + " - ZONA_ESC")
+    
+    # Substituindo valor 0 por None
+    df.loc[df['ZONA_ESC']==0,'ZONA_ESC'] = None
 
     #  Verificando intervalo de valores - condições:
         # "ZONA_ESC >= 1" E "ZONA_ESC <= 254"
@@ -1337,6 +1367,9 @@ def passo_subzona_esc(passo, df):
     :return: sem retorno
     """
     log_tela.info("### PASSO " + str(passo) + " - SUBZONA_ESC")
+    
+    # Substituindo valor 0 por None
+    df.loc[df['SUBZONA_ESC']==0,'SUBZONA_ESC'] = None
 
     #  Verificando intervalo de valores - condições:
         # "SUBZONA_ESC >= 1" E "SUBZONA_ESC <= 9"
@@ -1360,6 +1393,9 @@ def passo_mun_esc(passo, df):
     :return: sem retorno
     """
     log_tela.info("### PASSO " + str(passo) + " - MUN_ESC")
+    
+    # Substituindo valor 0 por None
+    df.loc[df['MUN_ESC']==0,'MUN_ESC'] = None
 
     #  Verificando intervalo de valores - condições:
         # "MUN_ESC >= 1" E "MUN_ESC <= 38"
@@ -1383,6 +1419,9 @@ def passo_zona_trab1(passo, df):
     :return: sem retorno
     """
     log_tela.info("### PASSO " + str(passo) + " - ZONA_TRAB1")
+    
+    # Substituindo valor 0 por None
+    df.loc[df['ZONA_TRAB1']==0,'ZONA_TRAB1'] = None
 
     #  Verificando intervalo de valores - condições:
         # "ZONA_TRAB1 >= 1" E "ZONA_TRAB1 <= 254"
@@ -1406,6 +1445,9 @@ def passo_subzona_trab1(passo, df):
     :return: sem retorno
     """
     log_tela.info("### PASSO " + str(passo) + " - SUBZONA_TRAB1")
+    
+    # Substituindo valor 0 por None
+    df.loc[df['SUBZONA_TRAB1']==0,'SUBZONA_TRAB1'] = None
 
     #  Verificando intervalo de valores - condições:
         # "SUBZONA_TRAB1 >= 1" E "SUBZONA_TRAB1 <= 9"
@@ -1429,6 +1471,9 @@ def passo_mun_trab1(passo, df):
     :return: sem retorno
     """
     log_tela.info("### PASSO " + str(passo) + " - MUN_TRAB1")
+    
+    # Substituindo valor 0 por None
+    df.loc[df['MUN_TRAB1']==0,'MUN_TRAB1'] = None
 
     #  Verificando intervalo de valores - condições:
         # "MUN_TRAB1 >= 1" E "MUN_TRAB1 <= 38"
@@ -1452,6 +1497,9 @@ def passo_zona_trab2(passo, df):
     :return: sem retorno
     """
     log_tela.info("### PASSO " + str(passo) + " - ZONA_TRAB2")
+    
+    # Substituindo valor 0 por None
+    df.loc[df['ZONA_TRAB2']==0,'ZONA_TRAB2'] = None
 
     #  Verificando intervalo de valores - condições:
         # "ZONA_TRAB2 >= 1" E "ZONA_TRAB2 <= 254"
@@ -1475,6 +1523,9 @@ def passo_subzona_trab2(passo, df):
     :return: sem retorno
     """
     log_tela.info("### PASSO " + str(passo) + " - SUBZONA_TRAB2")
+    
+    # Substituindo valor 0 por None
+    df.loc[df['SUBZONA_TRAB2']==0,'SUBZONA_TRAB2'] = None
 
     #  Verificando intervalo de valores - condições:
         # "SUBZONA_TRAB2 >= 1" E "SUBZONA_TRAB2 <= 9"
@@ -1498,6 +1549,9 @@ def passo_mun_trab2(passo, df):
     :return: sem retorno
     """
     log_tela.info("### PASSO " + str(passo) + " - MUN_TRAB2")
+    
+    # Substituindo valor 0 por None
+    df.loc[df['MUN_TRAB2']==0,'MUN_TRAB2'] = None
 
     #  Verificando intervalo de valores - condições:
         # "MUN_TRAB2 >= 1" E "MUN_TRAB2 <= 38"
@@ -1520,6 +1574,9 @@ def passo_zona_orig(passo, df):
     :return: sem retorno
     """
     log_tela.info("### PASSO " + str(passo) + " - ZONA_ORIG")
+    
+    # Substituindo valor 0 por None
+    df.loc[df['ZONA_ORIG']==0,'ZONA_ORIG'] = None
 
     # Verificando intervalo de valores - condições:
         # "ZONA_ORIG >= 1" E "ZONA_ORIG <= 254"
@@ -1543,6 +1600,9 @@ def passo_subzona_orig(passo, df):
     :return: sem retorno
     """
     log_tela.info("### PASSO " + str(passo) + " - SUBZONA_ORIG")
+    
+    # Substituindo valor 0 por None
+    df.loc[df['SUBZONA_ORIG']==0,'SUBZONA_ORIG'] = None
 
     # Verificando intervalo de valores - condições:
         # "SUBZONA_ORIG >= 1" E "SUBZONA_ORIG <= 9"
@@ -1566,6 +1626,9 @@ def passo_mun_orig(passo, df):
     :return: sem retorno
     """
     log_tela.info("### PASSO " + str(passo) + " - MUN_ORIG")
+    
+    # Substituindo valor 0 por None
+    df.loc[df['MUN_ORIG']==0,'MUN_ORIG'] = None
 
     # Verificando intervalo de valores - condições:
         # "MUN_ORIG >= 1" E "MUN_ORIG <= 38"
@@ -1589,6 +1652,9 @@ def passo_zona_dest(passo, df):
     :return: sem retorno
     """
     log_tela.info("### PASSO " + str(passo) + " - ZONA_DEST")
+    
+    # Substituindo valor 0 por None
+    df.loc[df['ZONA_DEST']==0,'ZONA_DEST'] = None
 
     # Verificando intervalo de valores - condições:
         # "ZONA_DEST >= 1" E "ZONA_DEST <= 254"
@@ -1612,6 +1678,9 @@ def passo_subzona_dest(passo, df):
     :return: sem retorno
     """
     log_tela.info("### PASSO " + str(passo) + " - SUBZONA_DEST")
+    
+    # Substituindo valor 0 por None
+    df.loc[df['SUBZONA_DEST']==0,'SUBZONA_DEST'] = None
 
     # Verificando intervalo de valores - condições:
         # "SUBZONA_DEST >= 1" E "SUBZONA_DEST <= 9"
@@ -1635,6 +1704,9 @@ def passo_mun_dest(passo, df):
     :return: sem retorno
     """
     log_tela.info("### PASSO " + str(passo) + " - MUN_DEST")
+    
+    # Substituindo valor 0 por None
+    df.loc[df['MUN_DEST']==0,'MUN_DEST'] = None
 
     # Verificando intervalo de valores - condições:
         # "MUN_DEST >= 1" E "MUN_DEST <= 38"
@@ -1646,14 +1718,21 @@ def passo_mun_dest(passo, df):
 
 def passo_serv_pas_orig(passo, df):
     """
-    Nada a ser feito, esse dado já é fornecido.
+    Substituir **0** por None
+    Substituir **2** por **0**
     
-    ####Categorias novas
+    ####Categorias antigas
     Valor|Descrição
     ----|----
     0|Não Respondido
     1|Sim
     2|Não
+    
+    ####Categorias novas
+    Valor|Descrição
+    ----|----
+    0|Não
+    1|Sim
     
     :param passo: Número do passo atual para registro/log
     :param df:
@@ -1661,7 +1740,10 @@ def passo_serv_pas_orig(passo, df):
     """
     log_tela.info("### PASSO " + str(passo) + " - SERV_PAS_ORIG")
 
-    verifica_range(df, 'SERV_PAS_ORIG', 0, 2)
+    df.loc[df['SERV_PAS_ORIG']==0,'SERV_PAS_ORIG'] = None
+    df.loc[df['SERV_PAS_ORIG']==2,'SERV_PAS_ORIG'] = 0
+
+    verifica_dummy(df, 'SERV_PAS_ORIG')
     log_output.info('\n\n===============================================\n')
     
     return df
@@ -1669,14 +1751,21 @@ def passo_serv_pas_orig(passo, df):
 
 def passo_serv_pas_dest(passo, df):
     """
-    Nada a ser feito, esse dado já é fornecido.
+    Substituir **0** por None
+    Substituir **2** por **0**
     
-    ####Categorias novas
+    ####Categorias antigas
     Valor|Descrição
     ----|----
     0|Não Respondido
     1|Sim
     2|Não
+    
+    ####Categorias novas
+    Valor|Descrição
+    ----|----
+    0|Não
+    1|Sim
     
     :param passo: Número do passo atual para registro/log
     :param df:
@@ -1684,7 +1773,10 @@ def passo_serv_pas_dest(passo, df):
     """
     log_tela.info("### PASSO " + str(passo) + " - SERV_PAS_DEST")
 
-    verifica_range(df, 'SERV_PAS_DEST', 0, 2)
+    df.loc[df['SERV_PAS_DEST']==0,'SERV_PAS_DEST'] = None
+    df.loc[df['SERV_PAS_DEST']==2,'SERV_PAS_DEST'] = 0
+    
+    verifica_dummy(df, 'SERV_PAS_DEST')
     log_output.info('\n\n===============================================\n')
     
     return df
@@ -1697,6 +1789,7 @@ def passo_motivo_orig(passo, df):
     * Substituir todos valores **8** por **7**
     * Substituir todos valores **9** por **8**
     * Substituir todos valores **10** por **9**
+    * Substituir todos valores **0** por **None**
 
     #### Categorias anteriores
     Valor|Descrição
@@ -1714,7 +1807,6 @@ def passo_motivo_orig(passo, df):
     #### Categorias novas
     Valor|Descrição
     ----|----
-    0|Não respondeu/não fez viagem
     1|Trabalho/Indústria
     2|Trabalho/Comércio
     3|Trabalho/Serviços
@@ -1725,7 +1817,7 @@ def passo_motivo_orig(passo, df):
     8|Residência
     9|Outros
     
-    [Teste: Checar se existe algum número < 0 ou > 9.
+    [Teste: Checar se existe algum número < 1 ou > 9.
         Se encontrar, retornar erro indicando em qual linha.]
     :param passo: Número do passo atual para registro/log
     :param df:
@@ -1743,10 +1835,12 @@ def passo_motivo_orig(passo, df):
     df.loc[df['MOTIVO_ORIG']==9,'MOTIVO_ORIG'] = 8
     # Substituindo valor 10 por 9
     df.loc[df['MOTIVO_ORIG']==10,'MOTIVO_ORIG'] = 9
+    # Substituindo valor 0 por None
+    df.loc[df['MOTIVO_ORIG']==0,'MOTIVO_ORIG'] = None
 
     # Verificando intervalo de valores - condições:
-        # "MOTIVO_ORIG >= 0" E "MOTIVO_ORIG <= 9"
-    verifica_range(df, 'MOTIVO_ORIG', 0, 9)
+        # "MOTIVO_ORIG >= 1" E "MOTIVO_ORIG <= 9"
+    verifica_range(df, 'MOTIVO_ORIG', 1, 9)
     log_output.info('\n\n===============================================\n')
 
     return df
@@ -1759,6 +1853,7 @@ def passo_motivo_dest(passo, df):
     Substituir todos valores **8** por **7**
     Substituir todos valores **9** por **8**
     Substituir todos valores **10** por **9**
+    Substituir todos valores **0** por **None**
     
     #### Categorias anteriores
     Valor|Descrição
@@ -1776,7 +1871,6 @@ def passo_motivo_dest(passo, df):
     #### Categorias novas
     Valor|Descrição
     ----|----
-    0|Não respondeu/não fez viagem
     1|Trabalho/Indústria
     2|Trabalho/Comércio
     3|Trabalho/Serviços
@@ -1787,7 +1881,7 @@ def passo_motivo_dest(passo, df):
     8|Residência
     9|Outros
     
-    [Teste: Checar se existe algum número < 0 ou > 9.
+    [Teste: Checar se existe algum número < 1 ou > 9.
         Se encontrar, retornar erro indicando em qual linha.]
     :param passo: Número do passo atual para registro/log
     :param df:
@@ -1805,10 +1899,12 @@ def passo_motivo_dest(passo, df):
     df.loc[df['MOTIVO_DEST']==9,'MOTIVO_DEST'] = 8
     # Substituindo valor 10 por 9
     df.loc[df['MOTIVO_DEST']==10,'MOTIVO_DEST'] = 9
+    # Substituindo valor 0 por None
+    df.loc[df['MOTIVO_DEST']==0,'MOTIVO_DEST'] = None
 
     # Verificando intervalo de valores - condições:
-        # "MOTIVO_DEST >= 0" E "MOTIVO_DEST <= 9"
-    verifica_range(df, 'MOTIVO_DEST', 0, 9)
+        # "MOTIVO_DEST >= 1" E "MOTIVO_DEST <= 9"
+    verifica_range(df, 'MOTIVO_DEST', 1, 9)
     log_output.info('\n\n===============================================\n')
 
     return df
@@ -1832,6 +1928,7 @@ def passo_modo1(passo, df):
     * Substituir todos valores **13** por **11**
     * Substituir todos valores **14** por **12**
     * Substituir todos valores **15** por **12**
+    * Substituir todos valores **0** por **None**
     
     #### Categorias anteriores
     Valor|Descrição
@@ -1855,7 +1952,6 @@ def passo_modo1(passo, df):
     #### Categorias novas
     Valor|Descrição
     ----|----
-    0|Não respondeu/não fez viagem
     1|Ônibus
     2|Ônibus Escolar / Empresa
     3|Dirigindo Automóvel
@@ -1869,7 +1965,7 @@ def passo_modo1(passo, df):
     11|A Pé
     12|Outros
     
-    [Teste: Checar se existe algum número < 0 ou > 12.
+    [Teste: Checar se existe algum número < 1 ou > 12.
         Se encontrar, retornar erro indicando em qual linha.]
     :param passo: Número do passo atual para registro/log
     :param df:
@@ -1891,10 +1987,11 @@ def passo_modo1(passo, df):
     df.loc[df['MODO1']==13,'MODO1'] = 11
     df.loc[df['MODO1']==14,'MODO1'] = 12
     df.loc[df['MODO1']==15,'MODO1'] = 12
+    df.loc[df['MODO1']==0,'MODO1'] = None
 
     # Verificando intervalo de valores - condições:
-        # "MODO1 >= 0" E "MODO1 <= 12"
-    verifica_range(df, 'MODO1', 0, 12)
+        # "MODO1 >= 1" E "MODO1 <= 12"
+    verifica_range(df, 'MODO1', 1, 12)
     log_output.info('\n\n===============================================\n')
     
     return df
@@ -1918,6 +2015,7 @@ def passo_modo2(passo, df):
     * Substituir todos valores **13** por **11**
     * Substituir todos valores **14** por **12**
     * Substituir todos valores **15** por **12**
+    * Substituir todos valores **0** por **None**
     
     #### Categorias anteriores
     Valor|Descrição
@@ -1941,7 +2039,6 @@ def passo_modo2(passo, df):
     #### Categorias novas
     Valor|Descrição
     ----|----
-    0|Não respondeu/não fez viagem/não utilizou 2º modo
     1|Ônibus
     2|Ônibus Escolar / Empresa
     3|Dirigindo Automóvel
@@ -1955,7 +2052,7 @@ def passo_modo2(passo, df):
     11|A Pé
     12|Outros
     
-    [Teste: Checar se existe algum número < 0 ou > 12.
+    [Teste: Checar se existe algum número < 1 ou > 12.
         Se encontrar, retornar erro indicando em qual linha.]
     :param passo: Número do passo atual para registro/log
     :param df:
@@ -1977,10 +2074,11 @@ def passo_modo2(passo, df):
     df.loc[df['MODO2']==13,'MODO2'] = 11
     df.loc[df['MODO2']==14,'MODO2'] = 12
     df.loc[df['MODO2']==15,'MODO2'] = 12
+    df.loc[df['MODO2']==0,'MODO2'] = None
     
     # Verificando intervalo de valores - condições:
-        # "MODO2 >= 0" E "MODO2 <= 12"
-    verifica_range(df, 'MODO2', 0, 12)
+        # "MODO2 >= 1" E "MODO2 <= 12"
+    verifica_range(df, 'MODO2', 1, 12)
     log_output.info('\n\n===============================================\n')
     
     return df
@@ -2004,6 +2102,7 @@ def passo_modo3(passo, df):
     * Substituir todos valores **13** por **11**
     * Substituir todos valores **14** por **12**
     * Substituir todos valores **15** por **12**
+    * Substituir todos valores **0** por **None**
     
     #### Categorias anteriores
     Valor|Descrição
@@ -2027,7 +2126,6 @@ def passo_modo3(passo, df):
     #### Categorias novas
     Valor|Descrição
     ----|----
-    0|Não respondeu/não fez viagem/não utilizou 3º modo
     1|Ônibus
     2|Ônibus Escolar / Empresa
     3|Dirigindo Automóvel
@@ -2041,7 +2139,7 @@ def passo_modo3(passo, df):
     11|A Pé
     12|Outros
     
-    [Teste: Checar se existe algum número < 0 ou > 12.
+    [Teste: Checar se existe algum número < 1 ou > 12.
         Se encontrar, retornar erro indicando em qual linha.]
     :param passo: Número do passo atual para registro/log
     :param df:
@@ -2063,10 +2161,11 @@ def passo_modo3(passo, df):
     df.loc[df['MODO3']==13,'MODO3'] = 11
     df.loc[df['MODO3']==14,'MODO3'] = 12
     df.loc[df['MODO3']==15,'MODO3'] = 12
+    df.loc[df['MODO3']==0,'MODO3'] = None
     
     # Verificando intervalo de valores - condições:
-        # "MODO3 >= 0" E "MODO3 <= 12"
-    verifica_range(df, 'MODO3', 0, 12)
+        # "MODO3 >= 1" E "MODO3 <= 12"
+    verifica_range(df, 'MODO3', 1, 12)
     log_output.info('\n\n===============================================\n')
     
     return df
@@ -2107,6 +2206,7 @@ def passo_modo_prin(passo, df):
     * Substituir todos valores **13** por **11**
     * Substituir todos valores **14** por **12**
     * Substituir todos valores **15** por **12**
+    * Substituir todos valores **0** por **None**
     
     #### Categorias anteriores
     Valor|Descrição
@@ -2130,7 +2230,6 @@ def passo_modo_prin(passo, df):
     #### Categorias novas
     Valor|Descrição
     ----|----
-    0|Não respondeu/não fez viagem/não utilizou 3º modo
     1|Ônibus
     2|Ônibus Escolar / Empresa
     3|Dirigindo Automóvel
@@ -2144,7 +2243,7 @@ def passo_modo_prin(passo, df):
     11|A Pé
     12|Outros
     
-    [Teste: Checar se existe algum número < 0 ou > 12.
+    [Teste: Checar se existe algum número < 1 ou > 12.
         Se encontrar, retornar erro indicando em qual linha.]
     :param passo: Número do passo atual para registro/log
     :param df:
@@ -2166,12 +2265,46 @@ def passo_modo_prin(passo, df):
     df.loc[df['MODO_PRIN']==13,'MODO_PRIN'] = 11
     df.loc[df['MODO_PRIN']==14,'MODO_PRIN'] = 12
     df.loc[df['MODO_PRIN']==15,'MODO_PRIN'] = 12
+    df.loc[df['MODO_PRIN']==0,'MODO_PRIN'] = None
     
     # Verificando intervalo de valores - condições:
-        # "MODO_PRIN >= 0" E "MODO_PRIN <= 12"
-    verifica_range(df, 'MODO_PRIN', 0, 12)
+        # "MODO_PRIN >= 1" E "MODO_PRIN <= 12"
+    verifica_range(df, 'MODO_PRIN', 1, 12)
     log_output.info('\n\n===============================================\n')
     
+    return df
+
+def passo_tipo_viag(passo, df):
+    """
+    * Substituir os valores **0** por **None**
+
+    # ####Categorias novas
+    # Valor|Descrição
+    # ----|----
+    # 1|Coletivo
+    # 2|Individual
+    # 3|A pé
+    
+    [Teste: Checar se existe algum número < 1 ou > 3.
+        Se encontrar, retornar erro indicando em qual linha.]
+    :param passo: Número do passo atual para registro/log
+    :param df:
+    :return: sem retorno
+
+    :param passo: Número do passo atual para registro/log
+    :param df:
+    :return: sem retorno
+    """
+    log_tela.info("### PASSO " + str(passo) + " - TIPO_VIAG")
+    
+    # Substituindo valor 0 por None
+    df.loc[df['TIPO_VIAG']==0,'TIPO_VIAG'] = None
+    
+    # Verificando intervalo de valores - condições:
+        # "MODO_PRIN >= 1" E "MODO_PRIN <= 3"
+    verifica_range(df, 'TIPO_VIAG', 1, 3)
+
+    log_output.info('\n\n===============================================\n')
     return df
     
 
@@ -2238,43 +2371,6 @@ def passo_valor_est_auto(passo, df, deflator):
     
     log_output.info('\n\n===============================================\n')
     
-    return df
-
-
-def passo_dist_viag(passo, df):
-    """
-    Calcula-se a distância euclidiana
-        (a partir da CO_ORIG_X;CO_ORIG_Y e CO_DEST_X;CO_DEST_Y)
-    :param passo: Número do passo atual para registro/log
-    :param df:
-    :return: Retorna dataframe com DIST_VIAG calculada e preenchida
-    """
-    log_tela.info("### PASSO " + str(passo) + " - DIST_VIAG")
-
-    def calcula_dist_viag(row):
-        """
-        Calcula a distância euclidiana dadas as coordenadas (x,y) de origem
-            e coordenadas (x,y) de destino da viagem.
-        O argumento passado é a "linha".
-        Uso:
-            df['DIST_VIAG'] = df.apply(calcula_DIST_VIAG, axis=1)
-        Retorna: DIST_VIAG da respetiva linha
-        """
-        co_orig_x = float(row['CO_ORIG_X'])
-        co_orig_y = float(row['CO_ORIG_Y'])
-        co_dest_x = float(row['CO_DEST_X'])
-        co_dest_y = float(row['CO_DEST_Y'])
-        x2 = math.pow((co_orig_x - co_dest_x), 2)
-        y2 = math.pow((co_orig_y - co_dest_y), 2)
-        return math.sqrt( x2 + y2 )
-
-    # Calculando "DIST_VIAG" (distância euclidiana)
-        # das coordenadas de origem (CO_ORIG_X;CO_ORIG_Y) e
-        # das coordenadas de destino (CO_DEST_X;CO_DEST_Y)
-    df['DIST_VIAG'] = df.apply(calcula_dist_viag, axis=1)
-    
-    log_output.info('\n\n===============================================\n')
-
     return df
 
 
@@ -2881,8 +2977,13 @@ def main():
     passo += 1
 
     # -----
-    # ##"TIPO_VIAG"; "H_SAIDA"; "MIN_SAIDA"; "ANDA_ORIG"; "H_CHEG"; "MIN_CHEG";
-    #   "ANDA_DEST" e "DURACAO"
+    # ##Passo: "TIPO_VIAG"
+    od = passo_tipo_viag(passo, od)
+    passo += 1
+
+    # -----
+    # ##"H_SAIDA"; "MIN_SAIDA"; "ANDA_ORIG"; "H_CHEG"; "MIN_CHEG";
+    #   "ANDA_DEST"; "DIST_VIAG" e "DURACAO"
     # Nada há que se fazer em relação aos dados das colunas acima mencionadas
 
     # -----
@@ -2898,11 +2999,6 @@ def main():
     # -----
     # ##Passo: Coordenadas
     od = coordenadas(passo, od)
-    passo += 1
-
-    # -----
-    # ##Passo: "DIST_VIAG"
-    od = passo_dist_viag(passo, od)
     passo += 1
         
     ## O passo TOT_VIAG apenas é chamado após a geração dos IDs.
