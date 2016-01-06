@@ -13,7 +13,10 @@ od$PESS_DURACAO_TOT=NULL
 od <- left_join(od, select(AUX1, ID_PESS, PESS_DURACAO_TOT), by = 'ID_PESS')
 
 # Criando nova variável para armazenar duração média de viagem de cada pessoa
-od <- od %>% mutate(PESS_DURACAO_MED = PESS_DURACAO_TOT / TOT_VIAG)
+od <- od %>% mutate(PESS_DURACAO_MED = ifelse (
+                                       TOT_VIAG==0,
+                                       0,
+                                       (PESS_DURACAO_TOT/TOT_VIAG)))
 
 #
 # Criando nova variável para armazenar duração total dispendida em viagem/deslocamento por família
@@ -39,4 +42,8 @@ od$FAM_VIAG_TOT=NULL
 od <- left_join(od, select(AUX3, ID_FAM, FAM_VIAG_TOT), by = 'ID_FAM')
 
 # Criando nova variável para armazenar duração média de viagem de cada família
-od <- od %>% mutate(FAM_DURACAO_MED = FAM_DURACAO_TOT / FAM_VIAG_TOT )
+od <- od %>% mutate(FAM_DURACAO_MED = ifelse (
+                                      FAM_VIAG_TOT==0,
+                                      0,
+                                      (FAM_DURACAO_TOT/FAM_VIAG_TOT)))
+                      
