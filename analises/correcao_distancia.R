@@ -128,7 +128,8 @@ od <- od %>%
 od <- od %>%
     mutate(DIST_VIAG = ifelse(
         F_VIAG==1 &
-        ZONA_ORIG==ZONA_DEST,
+        ZONA_ORIG==ZONA_DEST &
+        !is.na(ZONA_ORIG),
         0,
         DIST_VIAG
         )
@@ -141,14 +142,15 @@ od <- od %>%
         mutate(DIST_VIAG = ifelse(
             F_VIAG==1 & (
             ZONA_ORIG==0 | ZONA_DEST==0 |
-            ZONA_ORIG==999 | ZONA_DEST==999),
+            ZONA_ORIG==999 | ZONA_DEST==999 |
+            is.na(ZONA_ORIG) | is.na(ZONA_DEST)),
             NA,
             DIST_VIAG
             )
         )
 
 write.table(od,
-            file="../../../mestrado/mestrado-usp-ODs/banco unico - pols/od-11.csv",
+            file="../../../mestrado/mestrado-usp-ODs/banco unico - pols/od.csv",
             sep =';',
             dec=',',
             row.names = FALSE)
