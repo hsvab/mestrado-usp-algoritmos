@@ -27,13 +27,24 @@ Package: Hmisc
 Source: CRAN
 Version: 3.17-1
 Hash: 2ef69e4f3e49191a906eb9c76825fe84
-Requires: Formula, acepack, gtable, lattice, gridExtra, latticeExtra,
-    ggplot2
+Requires: Formula, acepack, ggplot2, gridExtra, gtable, lattice,
+    latticeExtra
 
 Package: MatrixModels
 Source: CRAN
 Version: 0.4-1
 Hash: 60a5c75e57aae4a0ce76cb7422939aaf
+
+Package: R.methodsS3
+Source: CRAN
+Version: 1.7.0
+Hash: 18e488de0e3499493db5c7cdb7471e0c
+
+Package: R.oo
+Source: CRAN
+Version: 1.19.0
+Hash: b59acd11664f31a5e4fc4c8df8c9d422
+Requires: R.methodsS3
 
 Package: R6
 Source: CRAN
@@ -141,7 +152,7 @@ Package: ggplot2
 Source: CRAN
 Version: 2.0.0
 Hash: 5befb1e7a9c7d0692d6c35fa02a29dbf
-Requires: digest, gtable, plyr, scales, reshape2
+Requires: digest, gtable, plyr, reshape2, scales
 
 Package: gridExtra
 Source: CRAN
@@ -268,6 +279,12 @@ Version: 5.19
 Hash: 53bd9a2edfd435d2d180d2a5eaae5aed
 Requires: MatrixModels, SparseM
 
+Package: readstata13
+Source: CRAN
+Version: 0.8.1
+Hash: 42b80a25f079f9e46343a4f463fc119f
+Requires: Rcpp
+
 Package: reshape2
 Source: CRAN
 Version: 1.4.1
@@ -290,7 +307,7 @@ Package: scales
 Source: CRAN
 Version: 0.3.0
 Hash: 323f8f5a7f2823f19bd3fd3c15fc196a
-Requires: RColorBrewer, Rcpp, dichromat, labeling, plyr, munsell
+Requires: RColorBrewer, Rcpp, dichromat, labeling, munsell, plyr
 
 Package: stringi
 Source: CRAN
