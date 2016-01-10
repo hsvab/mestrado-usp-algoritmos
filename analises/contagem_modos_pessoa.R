@@ -12,7 +12,7 @@
 # PESS_MODO_APE considera todas viagens feitas a pé
 # PESS_MODO_OUTROS considera todas viagens não contempladas pelas categorias anteriores
 
-# PESS_NO_MODOS conta quantos modos diferentes fora utilizados, por viagem, de acordo com estas 8 categorias
+# PESS_NO_MODOS conta quantos modos diferentes foram utilizados, por pessoa, de acordo com estas 8 categorias
 
 # Usando variável auxiliar AUX1 para agrupar por pessoa e fazer somatório de VIAG_MODO_ONIBUS
 AUX1 <- od %>% select(ANO, F_PESS, ID_PESS, VIAG_MODO_ONIBUS) %>% 
