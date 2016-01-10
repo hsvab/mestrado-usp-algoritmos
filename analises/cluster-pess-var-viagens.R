@@ -1,10 +1,11 @@
-library(Hmisc, quietly = TRUE)
+library(Hmisc, quietly = TRUE)df
 library(dplyr, quietly = TRUE)
 library(fastcluster, quietly = TRUE)
 library(ggplot2, quietly = TRUE)
 library(ggdendro, quietly = TRUE)
 library(fpc, quietly = TRUE)
 
+# Selecionando as variáveis com atributos de viagem, da pessoa
 od_cluster_pess <- od %>% filter(F_PESS==1) %>% select(PESS_DIST_TOT, PESS_DIST_MED,
                                                   PESS_DURACAO_TOT, PESS_DURACAO_MED,
                                                   PESS_MODO_ONIBUS, PESS_MODO_DIRIG,
@@ -13,7 +14,8 @@ od_cluster_pess <- od %>% filter(F_PESS==1) %>% select(PESS_DIST_TOT, PESS_DIST_
                                                   PESS_MODO_APE, PESS_MODO_OUTROS,
                                                   PESS_NO_MODOS, PESS_MOTIVO_TRAB,
                                                   PESS_MOTIVO_EDUC, PESS_MOTIVO_RES,
-                                                  PESS_MOTIVO_OUTROS, PESS_NO_MOTIVOS,
+                                                  PESS_MOTIVO_SERV_PAS, PESS_MOTIVO_MANUT_COMPRAS,
+                                                  PESS_MOTIVO_LAZER_OUTROS, PESS_NO_MOTIVOS,
                                                   PESS_PER_MADRUG, PESS_PER_COM_MAN,
                                                   PESS_PER_MANHA, PESS_PER_MEIODIA,
                                                   PESS_PER_TARDE, PESS_PER_COM_NOI,
