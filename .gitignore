@@ -12,3 +12,4 @@ doc/tags
 Antigos/
 .Rproj.user
 packrat/lib*/
+packrat/src/
