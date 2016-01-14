@@ -26,8 +26,8 @@ print("Tempo do hclust.vector no ano de 77:", quote = F)
 print(tempo)
 
 # Plotando dendrograma para definir a quantidade de clusters
-png(file="dendro-hierarq-cluster-familia-1977.png")
 plot(fam_hcluster, xlab=NA, sub=NA, hang=-1, labels = FALSE,  main = 'Cluster de atributos de viagens da família para 1977')
+dev.copy(png, file="dendro-hierarq-cluster-familia-1977.png")
 dev.off()
 # ggdendrogram(fam_hcluster, rotate = TRUE, size = 4, theme_dendro = FALSE, color = 'tomato')
 
@@ -67,8 +67,8 @@ print("Tempo do hclust.vector no ano de 87:", quote = F)
 print(tempo)
 
 # Plotando dendrograma para definir a quantidade de clusters
-png(file="dendro-hierarq-cluster-familia-1987.png")
 plot(fam_hcluster, xlab=NA, sub=NA, hang=-1, labels = FALSE,  main = 'Cluster de atributos de viagens da família para 1987')
+dev.copy(png, file="dendro-hierarq-cluster-familia-1987.png")
 dev.off()
 # ggdendrogram(fam_hcluster, rotate = TRUE, size = 4, theme_dendro = FALSE, color = 'tomato')
 
@@ -107,8 +107,8 @@ print("Tempo do hclust.vector no ano de 97:", quote = F)
 print(tempo)
 
 # Plotando dendrograma para definir a quantidade de clusters
-png(file="dendro-hierarq-cluster-familia-1997.png")
 plot(fam_hcluster, xlab=NA, sub=NA, hang=-1, labels = FALSE,  main = 'Cluster de atributos de viagens da família para 1997')
+dev.copy(png, file="dendro-hierarq-cluster-familia-1997.png")
 dev.off()
 # ggdendrogram(fam_hcluster, rotate = TRUE, size = 4, theme_dendro = FALSE, color = 'tomato')
 
@@ -149,8 +149,8 @@ print("Tempo do hclust.vector no ano de 2007:", quote = F)
 print(tempo)
 
 # Plotando dendrograma para definir a quantidade de clusters
-png(file="dendro-hierarq-cluster-familia-2007.png")
 plot(fam_hcluster, xlab=NA, sub=NA, hang=-1, labels = FALSE,  main = 'Cluster de atributos de viagens da família para 2007')
+dev.copy(png, file="dendro-hierarq-cluster-familia-2007.png")
 dev.off()
 # ggdendrogram(fam_hcluster, rotate = TRUE, size = 4, theme_dendro = FALSE, color = 'tomato')
 

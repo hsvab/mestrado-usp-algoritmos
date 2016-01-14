@@ -26,8 +26,8 @@ print("Tempo do hclust.vector fam_ward_tudo:", quote = F)
 print(tempo)
 
 # Plotando dendrograma para definir a quantidade de clusters
-png(file="dendro-hierarq-cluster-familia-total-ward.png")
 plot(fam_hcluster, xlab=NA, sub=NA, hang=-1, labels = FALSE,  main = 'Cluster de atributos de viagens da família - método ward')
+dev.copy(png, file="dendro-hierarq-cluster-familia-total-ward.png")
 dev.off()
 # ggdendrogram(fam_hcluster, rotate = TRUE, size = 4, theme_dendro = FALSE, color = 'tomato')
 
@@ -67,8 +67,8 @@ print("Tempo do hclust.vector fam_centroide_tudo:", quote = F)
 print(tempo)
 
 # Plotando dendrograma para definir a quantidade de clusters
-png(file="dendro-hierarq-cluster-familia-total-centroide.png")
 plot(fam_hcluster, xlab=NA, sub=NA, hang=-1, labels = FALSE,  main = 'Cluster de atributos de viagens da família - método centroide')
+dev.copy(png, file="dendro-hierarq-cluster-familia-total-centroide.png")
 dev.off()
 # ggdendrogram(fam_hcluster, rotate = TRUE, size = 4, theme_dendro = FALSE, color = 'tomato')
 

@@ -73,8 +73,8 @@ print("Tempo do hclust.vector no ano de 77:", quote = F)
 print(tempo)
 
 # Plotando dendrograma para definir a quantidade de clusters
-png(file="analises/dendro-hierarq-cluster-pessoa-1977.png")
 plot(pess_hcluster, xlab=NA, sub=NA, hang=-1, labels = FALSE,  main = 'Cluster de atributos de viagens da pessoa para 1977')
+dev.copy(png,file="analises/dendro-hierarq-cluster-pessoa-1977.png" )
 dev.off()
 # ggdendrogram(fam_hcluster, rotate = TRUE, size = 4, theme_dendro = FALSE, color = 'tomato')
 
@@ -161,8 +161,8 @@ print("Tempo do hclust.vector no ano de 78:", quote = F)
 print(tempo)
 
 # Plotando dendrograma para definir a quantidade de clusters
-png(file="analises/dendro-hierarq-cluster-pessoa-1987.png")
 plot(pess_hcluster, xlab=NA, sub=NA, hang=-1, labels = FALSE,  main = 'Cluster de atributos de viagens da pessoa para 1987')
+dev.copy(png, file="analises/dendro-hierarq-cluster-pessoa-1987.png")
 dev.off()
 # ggdendrogram(fam_hcluster, rotate = TRUE, size = 4, theme_dendro = FALSE, color = 'tomato')
 
@@ -246,8 +246,8 @@ od_cluster_pess$PESS_NO_PERIODOS <- scale(od_cluster_pess$PESS_NO_PERIODOS)
 system.time(pess_hcluster <- hclust.vector(od_cluster_pess, method="centroid", metric="euclidean", p=NULL))
 
 # Plotando dendrograma para definir a quantidade de clusters
-png(file="analises/dendro-hierarq-cluster-pessoa-1997.png")
 plot(pess_hcluster, xlab=NA, sub=NA, hang=-1, labels = FALSE,  main = 'Cluster de atributos de viagens da pessoa para 1997')
+dev.copy(png, file="analises/dendro-hierarq-cluster-pessoa-1997.png")
 dev.off()
 # ggdendrogram(fam_hcluster, rotate = TRUE, size = 4, theme_dendro = FALSE, color = 'tomato')
 
@@ -332,8 +332,8 @@ od_cluster_pess$PESS_NO_PERIODOS <- scale(od_cluster_pess$PESS_NO_PERIODOS)
 system.time(pess_hcluster <- hclust.vector(od_cluster_pess, method="centroid", metric="euclidean", p=NULL))
 
 # Plotando dendrograma para definir a quantidade de clusters
-png(file="analises/dendro-hierarq-cluster-pessoa-2007.png")
 plot(pess_hcluster, xlab=NA, sub=NA, hang=-1, labels = FALSE,  main = 'Cluster de atributos de viagens da pessoa para 2007')
+dev.copy(png, file="analises/dendro-hierarq-cluster-pessoa-2007.png")
 dev.off()
 # ggdendrogram(fam_hcluster, rotate = TRUE, size = 4, theme_dendro = FALSE, color = 'tomato')
 
