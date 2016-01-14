@@ -1,16 +1,21 @@
 carrega_bibliotecas <- function(){
-  library(ggplot2)
-  library(readstata13)
-  library(foreign)
-  library(data.table)
-  library(Hmisc)
-  library(gmodels)
-  library(memisc)
-  library(sfsmisc)
-  library(lazyeval)
-  library(psych)
-  library(plyr)
-  library(dplyr)
+  cat("Carregando as bibliotecas:\n")
+  cat(paste("ggplot2, readstata13, foreign,",
+              "data.table, Hmisc, gmodels, memisc, sfsmisc, lazyeval, psych, plyr,",
+              "fastcluster, dplyr\n"))
+  library(ggplot2, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
+  library(readstata13, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
+  library(foreign, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
+  library(data.table, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
+  library(Hmisc, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
+  library(gmodels, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
+  library(memisc, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
+  library(sfsmisc, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
+  library(lazyeval, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
+  library(psych, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
+  library(plyr, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
+  library(fastcluster, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
+  library(dplyr, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
 }
 
 salva_base_od <- function(DF,
