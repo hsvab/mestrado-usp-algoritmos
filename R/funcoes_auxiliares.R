@@ -18,7 +18,7 @@ carrega_bibliotecas <- function(){
   cat("Carregando as bibliotecas:\n")
   cat(pacotes_mestrado,"\n")
 
-  for( pacote in packages ) {
+  for( pacote in pacotes_mestrado ) {
     packages(pacote)
   }
 }
