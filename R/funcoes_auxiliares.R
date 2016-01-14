@@ -1,21 +1,26 @@
 carrega_bibliotecas <- function(){
+  packages<-function(x){
+    x<-as.character(match.call()[[2]])
+    if (!require(x,character.only=TRUE)){
+      install.packages(pkgs=x,
+                       repos="http://www.vps.fmvz.usp.br/CRAN/",
+                       warn.conflicts = FALSE,
+                       quietly = TRUE,
+                       verbose = FALSE)
+      require(x,character.only=TRUE)
+    }
+  }
+
+  pacotes_mestrado <- c("ggplot2", "readstata13", "foreign",
+                        "data.table", "Hmisc", "gmodels", "memisc", "sfsmisc", "lazyeval", "psych", "plyr",
+                        "fastcluster", "dplyr")
+
   cat("Carregando as bibliotecas:\n")
-  cat(paste("ggplot2, readstata13, foreign,",
-              "data.table, Hmisc, gmodels, memisc, sfsmisc, lazyeval, psych, plyr,",
-              "fastcluster, dplyr\n"))
-  library(ggplot2, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
-  library(readstata13, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
-  library(foreign, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
-  library(data.table, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
-  library(Hmisc, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
-  library(gmodels, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
-  library(memisc, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
-  library(sfsmisc, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
-  library(lazyeval, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
-  library(psych, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
-  library(plyr, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
-  library(fastcluster, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
-  library(dplyr, warn.conflicts = FALSE, quietly = TRUE, verbose = FALSE)
+  cat(pacotes_mestrado,"\n")
+
+  for( pacote in packages ) {
+    packages(pacote)
+  }
 }
 
 salva_base_od <- function(DF,
