@@ -44,7 +44,7 @@ salva_base_od <- function(DF,
   # Agora compacta o arquivo, sem "travar" a execução do R.
   cat("\nAgora compactando o arquivo salvo.\n")
   cat("Enquanto o arquivo é compactado você pode continuar utilizando o R!\n")
-  comando = paste0('bzip2 -k -f -q -9 ', arquivo_saida)
+  comando = paste0('bzip2 -k -f -q -9 "', arquivo_saida, '"')
   system(comando, wait=FALSE )
   cat("Não haverá uma mensagem de operação finalizada.")
 
