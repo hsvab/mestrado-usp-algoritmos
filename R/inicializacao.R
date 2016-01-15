@@ -17,7 +17,7 @@ for( pacote in pacotes_mestrado ) {
 
 rm(packages, pacotes_mestrado, pacote)
 cat('Carregando ambiente anteriormente salvo')
-load('.RData')
+#load('.RData')
 cat("Carregando as funções auxiliares.....")
 source('R/funcoes_auxiliares.R')
 cat(" OK\n")
