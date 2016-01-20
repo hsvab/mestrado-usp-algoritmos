@@ -1,43 +1,55 @@
-library(dplyr)
-setwd("~/haydee/mestrado/mestrado-usp-algoritmos/analises")
-od_77 <- read.table('../../mestrado-usp-ODs/bancos-separados/OD_1977_processado.csv.bz2', sep=';', dec=',', header=TRUE,
-                        colClasses = c(
-                        'ID_PESS'='character',
-                        'ID_VIAG'='character',
-                        'ID_DOM'='character',
-                        'ID_FAM'='character')
-)
-od_87 <- read.table('../../mestrado-usp-ODs/bancos-separados/OD_1987_processado.csv.bz2', sep=';', dec=',', header=TRUE,
-                        colClasses = c(
-                        'ID_PESS'='character',
-                        'ID_VIAG'='character',
-                        'ID_DOM'='character',
-                        'ID_FAM'='character')
-)
-od_97 <- read.table('../../mestrado-usp-ODs/bancos-separados/OD_1997_processado.csv.bz2', sep=';', dec=',', header=TRUE,
-                        colClasses = c(
-                        'ID_PESS'='character',
-                        'ID_VIAG'='character',
-                        'ID_DOM'='character',
-                        'ID_FAM'='character')
-)
-od_07 <- read.table('../../mestrado-usp-ODs/bancos-separados/OD_2007_processado.csv.bz2', sep=';', dec=',', header=TRUE,
-                        colClasses = c(
-                        'ID_PESS'='character',
-                        'ID_VIAG'='character',
-                        'ID_DOM'='character',
-                        'ID_FAM'='character')
-)
+#library(dplyr)
+#setwd("~/haydee/mestrado/mestrado-usp-algoritmos/analises")
+od_77 <- fread(file.path(.dirBasesSeparadas,'od_1977_processado_final.csv'),
+                sep=';', dec=',', header=TRUE, data.table = FALSE,
+                colClasses = c(
+                  'ID_PESS'='character',
+                  'ID_VIAG'='character',
+                  'ID_DOM'='character',
+                  'ID_FAM'='character'
+                )
+          )
+od_87 <- fread(file.path(.dirBasesSeparadas,'od_1987_processado_final.csv'),
+                sep=';', dec=',', header=TRUE, data.table = FALSE,
+                colClasses = c(
+                  'ID_PESS'='character',
+                  'ID_VIAG'='character',
+                  'ID_DOM'='character',
+                  'ID_FAM'='character'
+                )
+          )
+od_97 <- fread(file.path(.dirBasesSeparadas,'od_1997_processado_final.csv'),
+                sep=';', dec=',', header=TRUE, data.table = FALSE,
+                colClasses = c(
+                  'ID_PESS'='character',
+                  'ID_VIAG'='character',
+                  'ID_DOM'='character',
+                  'ID_FAM'='character'
+                )
+          )
+od_07 <- fread(file.path(.dirBasesSeparadas,'od_2007_processado_final.csv'),
+                sep=';', dec=',', header=TRUE, data.table = FALSE,
+                colClasses = c(
+                  'ID_PESS'='character',
+                  'ID_VIAG'='character',
+                  'ID_DOM'='character',
+                  'ID_FAM'='character'
+                )
+          )
 
-#Corrigindo tipo das variáveis entre os anos
-campos77 = sapply(od_77,typeof)
-campos87 = sapply(od_87,typeof)
-campos97 = sapply(od_97,typeof)
-campos07 = sapply(od_07,typeof)
-teste <- data.frame(campos77, campos87, campos97, campos07)
-teste$CHECK01 <-    campos77==campos87 &
-                    campos87==campos97 &
-                    campos97==campos07
+# Verificando data type das variáveis para ver se são necessárias correções.
+# campos77 = sapply(od_77,typeof)
+# campos87 = sapply(od_87,typeof)
+# campos97 = sapply(od_97,typeof)
+# campos07 = sapply(od_07,typeof)
+# teste <- data.frame(campos77, campos87, campos97, campos07)
+# teste$CHECK01 <-    campos77==campos87 &
+#                     campos87==campos97 &
+#                     campos97==campos07
+# rm(teste, campos07, campos87, campos97, campos77)
+
+#####
+# Corrigindo 'data type' das variáveis para unificar entre os anos
 
 ## 77
 od_77$DIA_SEM <- as.integer(od_77$DIA_SEM)
@@ -78,19 +90,12 @@ od_07$VALOR_EST_AUTO <- as.double(od_07$VALOR_EST_AUTO)
 
 od <- rbind(od_77, od_87, od_97, od_07)
 
-#camposOD <- sapply(od, FUN=typeof)
-#teste$camposOD <- camposOD
-#teste$CHECK02 <-    campos77==campos87 &
-#                    campos87==campos97 &
-#                    campos97==campos07 &
-#                    campos07==camposODv
-
 # Removendo variáveis geradas não mais necessárias
-rm(od_07, od_77, od_87, od_97, teste, campos07, campos87, campos97, campos77, camposOD)
+rm(od_07, od_77, od_87, od_97)
 
 # Salvando base unificada
 write.table(od,
-            file="../../mestrado-usp-ODs/banco unico - pols/od.csv",
+            file=file.path(.dirBasesUnicas,"od.csv"),
             sep =';',
             dec=',',
             row.names = FALSE)
