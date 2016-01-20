@@ -2,10 +2,13 @@ resumo.resultados.gerais <- function(DF=od,
                                      AGRUPA_POR='ANO',
                                      IMPRIME=T,
                                      RETORNA=F,
-                                     SALVA_EM=NULL) {
+                                     SALVA_EM=NULL,
+                                     NOME_ARQUIVO=NULL) {
   #
   # Função que realiza uma sumarização do dataframe olhando
   # os recortes das categorias da variável de agrupamento.
+  # Esta função irá salvar o resultado num arquivo CSV se pelo menos um dos
+  # parâmetros (SALVA_EM e/ou NOME_ARQUIVO) forem fornecidos na chamada.
   #
   # Parâmetros:
   #           DF -> dataframe que será avaliado. Por padrão
@@ -24,8 +27,10 @@ resumo.resultados.gerais <- function(DF=od,
   #                     dataframe será retornado no console. Este
   #                     parâmetro não tem qualquer relação com salvar
   #                     o resultado da análise num arquivo CSV.
-  #           SALVA_EM -> string com o caminho e o nome do arquivo csv
-  #                       no qual o resultado deve ser salvo.
+  #           SALVA_EM -> string com o caminho aonde o resultado deve ser salvo.
+  #           NOME_ARQUIVO -> Nome do arquivo aonde o resultado será
+  #                           salvo. Se essa informação não for passada
+  #                           utiliza um nome default.
   #
 
   if(IMPRIME) {
@@ -64,9 +69,20 @@ resumo.resultados.gerais <- function(DF=od,
     print.data.frame(resumo, row.names = FALSE, print.gap = 5 )
   }
 
-  if( is.character( SALVA_EM ) ) {
-    cat("Salvando o resultado da análise no arquivo '", SALVA_EM, "'")
-    write.table( resumo, file=SALVA_EM, sep=';', dec=',', row.names=F )
+  if( is.character(SALVA_EM) | is.character(NOME_ARQUIVO)){
+    salva = .dirResultados
+    if( is.character(SALVA_EM) ) {
+      salva = file.path(sub(pattern = "^(.*)/$","\\1",SALVA_EM))
+    }
+    if( is.character(NOME_ARQUIVO) ) {
+      salva = file.path(salva, paste0(NOME_ARQUIVO,'.csv'))
+    } else {
+      salva = file.path(salva, paste0("resumo_caracteristicas_gerais_por_",
+                                      AGRUPA_POR,'.csv'))
+    }
+
+    cat("Salvando o resultado da análise no arquivo '", salva, "'", sep='')
+    write.table( resumo, file=salva, sep=';', dec=',', row.names=F )
   }
 
   if( RETORNA ) {
@@ -79,11 +95,14 @@ resumo.resultados.viagens <- function(DF=od,
                                       APENAS_COM_VIAGEM=T,
                                       IMPRIME=T,
                                       RETORNA=F,
-                                      SALVA_EM=NULL) {
+                                      SALVA_EM=NULL,
+                                      NOME_ARQUIVO=NULL) {
   #
   # Função que realiza uma sumarização do dataframe olhando
   # os recortes das categorias da variável de agrupamento e
   # para as características das viagens.
+  # Esta função irá salvar o resultado num arquivo CSV se pelo menos um dos
+  # parâmetros (SALVA_EM e/ou NOME_ARQUIVO) forem fornecidos na chamada.
   #
   # Parâmetros:
   #           DF -> dataframe que será avaliado. Por padrão
@@ -108,8 +127,10 @@ resumo.resultados.viagens <- function(DF=od,
   #                     dataframe será retornado no console. Este
   #                     parâmetro não tem qualquer relação com salvar
   #                     o resultado da análise num arquivo CSV.
-  #           SALVA_EM -> string com o caminho e o nome do arquivo csv
-  #                       no qual o resultado deve ser salvo.
+  #           SALVA_EM -> string com o caminho aonde o resultado deve ser salvo.
+  #           NOME_ARQUIVO -> Nome do arquivo aonde o resultado será
+  #                           salvo. Se essa informação não for passada
+  #                           utiliza um nome default.
   #
 
   # Estamos utilizando o parâmetro APENAS_COM_VIAGEM na chamada pois ele é mais
@@ -205,9 +226,19 @@ resumo.resultados.viagens <- function(DF=od,
     print.data.frame(resumo, row.names = FALSE, print.gap = 5 )
   }
 
-  if( is.character( SALVA_EM ) ) {
-    cat("Salvando o resultado da análise no arquivo '", SALVA_EM, "'")
-    write.table( resumo, file=SALVA_EM, sep=';', dec=',', row.names=F )
+  if( is.character(SALVA_EM) | is.character(NOME_ARQUIVO)){
+    salva = .dirResultados
+    if( is.character(SALVA_EM) ) {
+      salva = file.path(sub(pattern = "^(.*)/$","\\1",SALVA_EM))
+    }
+    if( is.character(NOME_ARQUIVO) ) {
+      salva = file.path(salva, paste0(NOME_ARQUIVO,'.csv'))
+    } else {
+      salva = file.path(salva, paste0("resumo_viagem_por_",AGRUPA_POR,'.csv'))
+    }
+
+    cat("Salvando o resultado da análise no arquivo '", salva, "'", sep='')
+    write.table( resumo, file=salva, sep=';', dec=',', row.names=F )
   }
 
   if( RETORNA ) {
@@ -219,11 +250,14 @@ resumo.resultados.pessoas <- function(DF=od,
                                       AGRUPA_POR='ANO',
                                       IMPRIME=T,
                                       RETORNA=F,
-                                      SALVA_EM=NULL) {
+                                      SALVA_EM=NULL,
+                                      NOME_ARQUIVO=NULL) {
   #
   # Função que realiza uma sumarização do dataframe olhando
   # os recortes das categorias da variável de agrupamento e
   # para as características das pessoas.
+  # Esta função irá salvar o resultado num arquivo CSV se pelo menos um dos
+  # parâmetros (SALVA_EM e/ou NOME_ARQUIVO) forem fornecidos na chamada.
   #
   # Parâmetros:
   #           DF -> dataframe que será avaliado. Por padrão
@@ -242,8 +276,10 @@ resumo.resultados.pessoas <- function(DF=od,
   #                     dataframe será retornado no console. Este
   #                     parâmetro não tem qualquer relação com salvar
   #                     o resultado da análise num arquivo CSV.
-  #           SALVA_EM -> string com o caminho e o nome do arquivo csv
-  #                       no qual o resultado deve ser salvo.
+  #           SALVA_EM -> string com o caminho aonde o resultado deve ser salvo.
+  #           NOME_ARQUIVO -> Nome do arquivo aonde o resultado será
+  #                           salvo. Se essa informação não for passada
+  #                           utiliza um nome default.
   #
 
   if(IMPRIME) {
@@ -324,9 +360,19 @@ resumo.resultados.pessoas <- function(DF=od,
     print.data.frame(resumo, row.names = FALSE, print.gap = 5 )
   }
 
-  if( is.character( SALVA_EM ) ) {
-    cat("Salvando o resultado da análise no arquivo '", SALVA_EM, "'")
-    write.table( resumo, file=SALVA_EM, sep=';', dec=',', row.names=F )
+  if( is.character(SALVA_EM) | is.character(NOME_ARQUIVO)){
+    salva = .dirResultados
+    if( is.character(SALVA_EM) ) {
+      salva = file.path(sub(pattern = "^(.*)/$","\\1",SALVA_EM))
+    }
+    if( is.character(NOME_ARQUIVO) ) {
+      salva = file.path(salva, paste0(NOME_ARQUIVO,'.csv'))
+    } else {
+      salva = file.path(salva, paste0("resumo_pessoa_por_",AGRUPA_POR,'.csv'))
+    }
+
+    cat("Salvando o resultado da análise no arquivo '", salva, "'", sep='')
+    write.table( resumo, file=salva, sep=';', dec=',', row.names=F )
   }
 
   if( RETORNA ) {
@@ -338,11 +384,14 @@ resumo.resultados.familias <- function(DF=od,
                                        AGRUPA_POR='ANO',
                                        IMPRIME=T,
                                        RETORNA=F,
-                                       SALVA_EM=NULL) {
+                                       SALVA_EM=NULL,
+                                       NOME_ARQUIVO=NULL) {
   #
   # Função que realiza uma sumarização do dataframe olhando
   # os recortes das categorias da variável de agrupamento e
   # para as características das famílias
+  # Esta função irá salvar o resultado num arquivo CSV se pelo menos um dos
+  # parâmetros (SALVA_EM e/ou NOME_ARQUIVO) forem fornecidos na chamada.
   #
   # Parâmetros:
   #           DF -> dataframe que será avaliado. Por padrão
@@ -361,8 +410,10 @@ resumo.resultados.familias <- function(DF=od,
   #                     dataframe será retornado no console. Este
   #                     parâmetro não tem qualquer relação com salvar
   #                     o resultado da análise num arquivo CSV.
-  #           SALVA_EM -> string com o caminho e o nome do arquivo csv
-  #                       no qual o resultado deve ser salvo.
+  #           SALVA_EM -> string com o caminho aonde o resultado deve ser salvo.
+  #           NOME_ARQUIVO -> Nome do arquivo aonde o resultado será
+  #                           salvo. Se essa informação não for passada
+  #                           utiliza um nome default.
   #
 
   if(IMPRIME) {
@@ -437,8 +488,18 @@ resumo.resultados.familias <- function(DF=od,
     print.data.frame(resumo, row.names = FALSE, print.gap = 5 )
   }
 
-  if( is.character( SALVA_EM ) ) {
-    cat("Salvando o resultado da análise no arquivo '", SALVA_EM, "'")
+  if( is.character(SALVA_EM) | is.character(NOME_ARQUIVO)){
+    salva = .dirResultados
+    if( is.character(SALVA_EM) ) {
+      salva = file.path(sub(pattern = "^(.*)/$","\\1",SALVA_EM))
+    }
+    if( is.character(NOME_ARQUIVO) ) {
+      salva = file.path(salva, paste0(NOME_ARQUIVO,'.csv'))
+    } else {
+      salva = file.path(salva, paste0("resumo_familia_por_",AGRUPA_POR,'.csv'))
+    }
+
+    cat("Salvando o resultado da análise no arquivo '", salva, "'", sep='')
     write.table( resumo, file=SALVA_EM, sep=';', dec=',', row.names=F )
   }
 
@@ -452,10 +513,13 @@ resumo.resultados <-  function(DF=od,
                                APENAS_COM_VIAGEM=T,
                                IMPRIME=T,
                                RETORNA=F,
-                               SALVA_EM=NULL) {
+                               SALVA_EM=NULL,
+                               NOME_ARQUIVO=NULL) {
   #
   # Função que realiza uma sumarização do dataframe olhando
   # os recortes das categorias da variável de agrupamento.
+  # Esta função irá salvar o resultado num arquivo CSV se pelo menos um dos
+  # parâmetros (SALVA_EM e/ou NOME_ARQUIVO) forem fornecidos na chamada.
   #
   # Parâmetros:
   #           DF -> dataframe que será avaliado. Por padrão
@@ -480,8 +544,10 @@ resumo.resultados <-  function(DF=od,
   #                     dataframe será retornado no console. Este
   #                     parâmetro não tem qualquer relação com salvar
   #                     o resultado da análise num arquivo CSV.
-  #           SALVA_EM -> string com o caminho e o nome do arquivo csv
-  #                       no qual o resultado deve ser salvo.
+  #           SALVA_EM -> string com o caminho aonde o resultado deve ser salvo.
+  #           NOME_ARQUIVO -> Nome do arquivo aonde o resultado será
+  #                           salvo. Se essa informação não for passada
+  #                           utiliza um nome default.
   #
 
   cat("Resumo completo dos resultados.", "\n")
@@ -531,9 +597,19 @@ resumo.resultados <-  function(DF=od,
     print.data.frame(completo, row.names = FALSE, print.gap = 5 )
   }
 
-  if( is.character( SALVA_EM ) ) {
-    cat("Salvando o resultado da análise no arquivo '", SALVA_EM, "'")
-    write.table( completo, file=SALVA_EM, sep=';', dec=',', row.names=F )
+  if( is.character(SALVA_EM) | is.character(NOME_ARQUIVO)){
+    salva = .dirResultados
+    if( is.character(SALVA_EM) ) {
+      salva = file.path(sub(pattern = "^(.*)/$","\\1",SALVA_EM))
+    }
+    if( is.character(NOME_ARQUIVO) ) {
+      salva = file.path(salva, paste0(NOME_ARQUIVO,'.csv'))
+    } else {
+      salva = file.path(salva, paste0("resumo_por_",AGRUPA_POR,'.csv'))
+    }
+
+    cat("Salvando o resultado da análise no arquivo '", salva, "'", sep='')
+    write.table( completo, file=salva, sep=';', dec=',', row.names=F )
   }
 
   if( RETORNA ) {
@@ -546,13 +622,16 @@ resumo.resultados <-  function(DF=od,
 # passe o valor como uma string.
 # P.ex: quanti_por_ano(FE_DOM)
 quanti_por_grupo <- function(DF=od,
-                             VARIAVEL,
+                             VARIAVEL=NULL,
                              AGRUPA_POR='ANO',
                              IMPRIME=T,
                              RETORNA=F,
-                             SALVA_CSV=F) {
-  #
+                             SALVA_EM=NULL,
+                             NOME_ARQUIVO=NULL) {
+
   # Função de sumarização de variáveis quanti por ano.
+  # Esta função irá salvar o resultado num arquivo CSV se pelo menos um dos
+  # parâmetros (SALVA_EM e/ou NOME_ARQUIVO) forem fornecidos na chamada.
   #
   # Parâmetros:
   #           DF -> Dataframe que será avaliado. Por padrão
@@ -576,8 +655,15 @@ quanti_por_grupo <- function(DF=od,
   #                     dataframe será retornado no console. Este
   #                     parâmetro não tem qualquer relação com salvar
   #                     o resultado da análise num arquivo CSV.
-  #           SALVA_EM -> string com o caminho e o nome do arquivo csv
-  #                       no qual o resultado deve ser salvo.
+  #           SALVA_EM -> string com o caminho aonde o resultado
+  #                       deve ser salvo.
+  #           NOME_ARQUIVO -> Nome do arquivo aonde o resultado será
+  #                           salvo. Se essa informação não for passada
+  #                           utiliza um nome default.
+
+  if(!is.character(VARIAVEL)) {
+    stop("Por favor, passe o parâmetro VARIÁVEL para a função")
+  }
 
     agrupado_a <- DF %>%
         group_by_(as.name(AGRUPA_POR)) %>%
@@ -634,9 +720,19 @@ quanti_por_grupo <- function(DF=od,
       print.data.frame(parte_b, right = 5, row.names = F)
     }
 
-    if( SALVA_EM ) {
-      cat("Salvando o resultado da análise no arquivo '", SALVA_EM, "'")
-      write.table( retorno, file=SALVA_EM, sep=';', dec=',', row.names=F )
+    if( is.character(SALVA_EM) | is.character(NOME_ARQUIVO)){
+      salva = .dirResultados
+      if( is.character(SALVA_EM) ) {
+        salva = file.path(sub(pattern = "^(.*)/$","\\1",SALVA_EM))
+      }
+      if( is.character(NOME_ARQUIVO) ) {
+        salva = file.path(salva, paste0(NOME_ARQUIVO,'.csv'))
+      } else {
+        salva = file.path(salva, paste0("quanti-por-grupo-",AGRUPA_POR,'-',VARIAVEL,'.csv'))
+      }
+
+      cat("Salvando o resultado da análise no arquivo '", salva, "'", sep='')
+      write.table( retorno, file=salva, sep=';', dec=',', row.names=F )
     }
 
     if( RETORNA ) {

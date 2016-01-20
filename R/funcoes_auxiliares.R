@@ -1,31 +1,6 @@
-carrega_bibliotecas <- function(){
-  packages<-function(x){
-    x<-as.character(match.call()[[2]])
-    if (!require(x,character.only=TRUE)){
-      install.packages(pkgs=x,
-                       repos="http://www.vps.fmvz.usp.br/CRAN/",
-                       warn.conflicts = FALSE,
-                       quietly = TRUE,
-                       verbose = FALSE)
-      require(x,character.only=TRUE)
-    }
-  }
-
-  pacotes_mestrado <- c("ggplot2", "readstata13", "foreign",
-                        "data.table", "Hmisc", "gmodels", "memisc", "sfsmisc", "lazyeval", "psych", "plyr",
-                        "fastcluster", "dplyr")
-
-  cat("Carregando as bibliotecas:\n")
-  cat(pacotes_mestrado,"\n")
-
-  for( pacote in pacotes_mestrado ) {
-    packages(pacote)
-  }
-}
-
 salva_base_od <- function(DF,
                           VERSAO=NULL,
-                          CAMINHO='../bases/banco unico - pols/') {
+                          CAMINHO=.dirBasesUnicas) {
   #
   # Esta função salva o dataframe e depois compacta ele com bzip.
   # Primeiro o arquivo é salvo como CSV e, depois, ele será compactado.
@@ -40,11 +15,11 @@ salva_base_od <- function(DF,
   #
 
   #  Primeiro salvamos como CSV:
-  arquivo_saida = paste0(CAMINHO, "od")
+  arquivo_saida = file.path(sub(pattern = "^(.*)/$","\\1",CAMINHO), "od")
   if(is.character(VERSAO)) { arquivo_saida = paste0(arquivo_saida, "-", VERSAO) }
   arquivo_saida = paste0(arquivo_saida, ".csv")
 
-  cat("Salvando o arquivo ", arquivo_saida,"\n")
+  cat("Salvando o arquivo ", arquivo_saida,"\n", sep='')
   write.table(x = DF,
             file = arquivo_saida,
             sep = ';',
@@ -61,7 +36,7 @@ salva_base_od <- function(DF,
 }
 
 carrega_base_od <- function(VERSAO=NULL,
-                            CAMINHO="../bases/banco unico - pols/") {
+                            CAMINHO=.dirBasesUnicas) {
   #
   # Precisa da biblioteca data.table para funcionar
   #
@@ -85,9 +60,25 @@ carrega_base_od <- function(VERSAO=NULL,
   #     od <- carrega_base_od("05", "~/diretorio")
   #
 
-  arquivo = paste0(CAMINHO,  'od')
+  arquivo = file.path(sub(pattern = "^(.*)/$","\\1",CAMINHO), "od")
   if(is.character(VERSAO)) { arquivo = paste0(arquivo, "-", VERSAO) }
   arquivo = paste0(arquivo,".csv")
+
+  # Conferindo se o arquivo existe. Se não existir, verifica se existe o bz2
+  # do arquivo e descompacta ele. Se não existir nem o CSV nem o CSV.BZ2,
+  # então retorna uma mensagem dizendo que o arquivo não existe.
+
+  if ( !file.exists( arquivo ) ) {
+    if ( file.exists( paste0(arquivo,".bz2") ) ) {
+      cat("O arquivo '", arquivo, "' não foi encontrado.\n", sep='')
+      cat("Descompactando o arquivo '", arquivo, ".bz2'\n", sep='')
+      comando = paste0('bunzip2 -k -f -q "', arquivo, '.bz2"')
+      system( comando, wait=TRUE )
+      cat("Arquivo descompactado, lendo arquivo...\n")
+    } else {
+      stop(paste0("O arquivo '", arquivo, "' não foi encontrado, abortando ação"))
+    }
+  }
 
   return(
     fread(arquivo,
@@ -102,6 +93,51 @@ carrega_base_od <- function(VERSAO=NULL,
 
 }
 
+# Multiple plot function
+#
+# ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
+# - cols:   Number of columns in layout
+# - layout: A matrix specifying the layout. If present, 'cols' is ignored.
+#
+# If the layout is something like matrix(c(1,2,3,3), nrow=2, byrow=TRUE),
+# then plot 1 will go in the upper left, 2 will go in the upper right, and
+# 3 will go all the way across the bottom.
+#
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  library(grid)
+
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+
+  numPlots = length(plots)
+
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                     ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+
+  if (numPlots==1) {
+    print(plots[[1]])
+
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
 
 ################################################################################
 #          Funções de teste de desempenho dos métodos de leitura
@@ -169,3 +205,26 @@ suite_de_testes_de_leitura <- function() {
 
   system("rm teste*.csv*")
 }
+rm(suite_de_testes_de_leitura)
+################################################################################
+#          Funções de verificação nas correções das bases originais
+################################################################################
+
+correcoes.originais.resumo <- function(df, linhaInicio, linhaFim=NULL) {
+  if ( !is.null(linhaFim) ) {
+    df[
+      as.integer(linhaInicio):as.integer(linhaFim),
+      c('ID_DOM','F_DOM','FE_DOM','ID_FAM','F_FAM','FE_FAM','REN_FAM',
+        'ID_PESS','F_PESS','FE_PESS','IDADE','SEXO','SIT_FAM','REN_IND',
+        'ID_VIAG','F_VIAG','FE_VIAG','DURACAO','H_SAIDA','MIN_SAIDA',
+        'H_CHEG','MIN_CHEG','ID_ORIGINAL','ID_CONSOLIDADO_01')]
+  } else {
+    df[
+      as.integer(linhaInicio),
+      c('ID_DOM','F_DOM','FE_DOM','ID_FAM','F_FAM','FE_FAM','REN_FAM',
+        'ID_PESS','F_PESS','FE_PESS','IDADE','SEXO','SIT_FAM','REN_IND',
+        'ID_VIAG','F_VIAG','FE_VIAG','DURACAO','H_SAIDA','MIN_SAIDA',
+        'H_CHEG','MIN_CHEG','ID_ORIGINAL','ID_CONSOLIDADO_01')]
+  }
+}
+rm(correcoes.originais.resumo)

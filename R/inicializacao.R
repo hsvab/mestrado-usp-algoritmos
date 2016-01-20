@@ -16,21 +16,28 @@ for( pacote in pacotes_mestrado ) {
 }
 
 rm(packages, pacotes_mestrado, pacote)
-cat('Carregando ambiente anteriormente salvo')
-#load('.RData')
 cat("Carregando as funções auxiliares.....")
 source('R/funcoes_auxiliares.R')
 cat(" OK\n")
+
 cat("Carregando funções auxiliares de sumarização....")
 source('R/auxiliar_sumarizacao.R')
 cat(" OK\n")
+
 cat("Carregando função que gera gráficos de clusters....")
 source('R/graficos_de_clusters.R')
 cat(" OK\n")
+
 cat("Carregando funções que aplica labels no dataframe da OD....")
 source('R/aplica_labels.R')
 cat(" OK\n")
-cat("\nAlterando o 'working directory' para 'analises'\n")
-setwd('analises')
-cat("\nTerminando de carregar o workspace, assim que ele estiver carregado\n",
-    "o ambiente estará pronto para ser utilizado, bom trabalho! <3\n")
+
+cat("Carregando variáveis globais....")
+source('R/variaveis_gerais.R')
+cat(" OK\n")
+
+# Setando diretorio aonde estão os algoritmos
+setwd(.dirAlgoritmosAnalises)
+cat("\nAlterando o 'working directory' para 'analises' ('",getwd(),"')\n")
+
+cat("\nAmbiente pronto para ser utilizado, bom trabalho! <3\n\n")

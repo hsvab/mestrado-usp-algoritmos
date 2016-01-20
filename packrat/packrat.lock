@@ -254,8 +254,8 @@ Hash: 6c43038fa43e75f56bcde10e82e978f7
 
 Package: memisc
 Source: CRAN
-Version: 0.97
-Hash: ab1aab419ff9f61daca2010e2b2e0ea7
+Version: 0.99.3
+Hash: 6b279d4b8f575d337ba91ce04f848a35
 Requires: lattice
 
 Package: mime
