@@ -711,8 +711,7 @@ quanti_por_grupo <- function(DF=od,
 
     parte_b = rbind(agrupado_b, geral_b)
 
-    retorno <- cbind(parte_a, select(parte_b, -ANO))
-    retorno <- cbind(parte_a, parte_b)
+    retorno <- cbind(parte_a, parte_b[,-1])
 
     if( IMPRIME ) {
       print.data.frame(parte_a, right = 5, row.names = F)
