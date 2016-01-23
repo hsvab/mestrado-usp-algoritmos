@@ -12,3 +12,5 @@ doc/tags
 Antigos/
 .Rproj.user
 packrat/lib*/
+*_cache/
+*_files/
