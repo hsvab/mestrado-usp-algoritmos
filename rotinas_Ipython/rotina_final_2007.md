@@ -1,8 +1,5 @@
 
-
-```python
 # Setup Inicial
-```
 
 
 ```python

@@ -1718,16 +1718,7 @@ def passo_mun_dest(passo, df):
 
 def passo_serv_pas_orig(passo, df):
     """
-    Substituir **0** por None
-    Substituir **2** por **0**
-    
-    ####Categorias antigas
-    Valor|Descrição
-    ----|----
-    0|Não Respondido
-    1|Sim
-    2|Não
-    
+    Esta informação não existe para este ano.
     ####Categorias novas
     Valor|Descrição
     ----|----
@@ -1740,8 +1731,7 @@ def passo_serv_pas_orig(passo, df):
     """
     log_tela.info("### PASSO " + str(passo) + " - SERV_PAS_ORIG")
 
-    df.loc[df['SERV_PAS_ORIG']==0,'SERV_PAS_ORIG'] = None
-    df.loc[df['SERV_PAS_ORIG']==2,'SERV_PAS_ORIG'] = 0
+    df['SERV_PAS_ORIG'] = None
 
     verifica_dummy(df, 'SERV_PAS_ORIG')
     log_output.info('\n\n===============================================\n')
@@ -1751,16 +1741,7 @@ def passo_serv_pas_orig(passo, df):
 
 def passo_serv_pas_dest(passo, df):
     """
-    Substituir **0** por None
-    Substituir **2** por **0**
-    
-    ####Categorias antigas
-    Valor|Descrição
-    ----|----
-    0|Não Respondido
-    1|Sim
-    2|Não
-    
+    Esta informação não existe para este ano.
     ####Categorias novas
     Valor|Descrição
     ----|----
@@ -1773,8 +1754,7 @@ def passo_serv_pas_dest(passo, df):
     """
     log_tela.info("### PASSO " + str(passo) + " - SERV_PAS_DEST")
 
-    df.loc[df['SERV_PAS_DEST']==0,'SERV_PAS_DEST'] = None
-    df.loc[df['SERV_PAS_DEST']==2,'SERV_PAS_DEST'] = 0
+    df['SERV_PAS_DEST'] = None
     
     verifica_dummy(df, 'SERV_PAS_DEST')
     log_output.info('\n\n===============================================\n')
@@ -2659,9 +2639,7 @@ def passo_cd_entre(passo, df):
 def passo_correcoes(passo, df):
     log_tela.info("### PASSO " + str(passo) + " - Correções")
     
-    log_tela.info("Corrigindo 'SERV_PAS' caso TOT_VIAG seja nulo.")
-    df.loc[df['TOT_VIAG'] == 0, 'SERV_PAS_ORIG'] = 0
-    df.loc[df['TOT_VIAG'] == 0, 'SERV_PAS_DEST'] = 0
+    log_tela.info("Sem correções a serem realizadas")
     
     return df
 ```
@@ -3026,7 +3004,8 @@ def main():
     log_tela.info('Salvando dataframe como arquivo CSV')
     # -----
     # ## Salvando o dataframe num arquivo local
-    od.to_csv('outputs/1987_od.csv', sep=';', decimal=',', index=False)
+                    #compression=bz2
+    od.to_csv('outputs/1987_od.csv', sep=';', decimal=',', index=False, na_rep="NA" )
 
     log_tela.info("Base gerada. Arquivo: outputs/1987_od.csv")
 
