@@ -6,7 +6,8 @@ packages<-function(x){
 
 pacotes_mestrado <- c("ggplot2", "readstata13", "foreign","data.table",
                       "Hmisc", "gmodels", "memisc", "sfsmisc", "lazyeval",
-                       "psych", "plyr", "fastcluster", "dplyr")
+                       "psych", "plyr", "fastcluster", "mlogit", "mnlogit",
+                      "dplyr")
 
 cat("Carregando as bibliotecas:\n")
 cat(pacotes_mestrado,"\n")

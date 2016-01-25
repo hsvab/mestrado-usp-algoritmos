@@ -236,6 +236,12 @@ Source: CRAN
 Version: 0.1.10
 Hash: 9679f1ac7f6bc07bc79755f34cd15e1f
 
+Package: lmtest
+Source: CRAN
+Version: 0.9-34
+Hash: 0f7651b07fb83faede8509ff4c5db819
+Requires: zoo
+
 Package: magrittr
 Source: CRAN
 Version: 1.5
@@ -246,6 +252,12 @@ Source: CRAN
 Version: 0.7.7
 Hash: fea2343a1119d61b0cc5c0a950d103a3
 Requires: mime
+
+Package: maxLik
+Source: CRAN
+Version: 1.3-4
+Hash: ae2b325d90e80bccf8e0d29fcf854007
+Requires: miscTools, sandwich
 
 Package: mclust
 Source: CRAN
@@ -262,6 +274,23 @@ Package: mime
 Source: CRAN
 Version: 0.4
 Hash: b08c52dae92a0a11e64a4deea032ec33
+
+Package: miscTools
+Source: CRAN
+Version: 0.6-16
+Hash: 8db52229ed86f0d790c0805b0184be74
+
+Package: mlogit
+Source: CRAN
+Version: 0.2-4
+Hash: 5953c44a8110522961bf1ecfc11db2dd
+Requires: Formula, lmtest, maxLik, statmod, zoo
+
+Package: mnlogit
+Source: CRAN
+Version: 1.2.4
+Hash: 148b68f208ab553986197d0c63d059a3
+Requires: Formula, lmtest, mlogit
 
 Package: mnormt
 Source: CRAN
@@ -337,6 +366,12 @@ Version: 0.92-5
 Hash: 6b6e87970ffd936a94230d9d8a9a55e7
 Requires: DEoptimR
 
+Package: sandwich
+Source: CRAN
+Version: 2.3-4
+Hash: eb356b4a90fa5887a45917b42587bf6c
+Requires: zoo
+
 Package: scales
 Source: CRAN
 Version: 0.3.0
@@ -347,6 +382,11 @@ Package: sfsmisc
 Source: CRAN
 Version: 1.0-29
 Hash: acb4dd97d6af1a0e6b2b4ac9c3016487
+
+Package: statmod
+Source: CRAN
+Version: 1.4.23
+Hash: 910282ed1bcc71eb0bf2f254f15f3bfb
 
 Package: stringi
 Source: CRAN
@@ -373,3 +413,9 @@ Package: yaml
 Source: CRAN
 Version: 2.1.13
 Hash: 4854ccabebc225e8a7309fb4a74980de
+
+Package: zoo
+Source: CRAN
+Version: 1.7-12
+Hash: 8ce4a89536cba4fa6023190959de5658
+Requires: lattice
