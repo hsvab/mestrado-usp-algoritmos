@@ -698,7 +698,7 @@ quanti_por_grupo <- function(DF=od,
             NAs = lazyeval::interp(~sum(is.na(x)), x=as.name(VARIAVEL))
         ) %>% as.data.frame()
 
-    geral_b <- od %>%
+    geral_b <- DF %>%
         summarise_(
             media = lazyeval::interp(~mean(x, na.rm=T), x=as.name(VARIAVEL)),
             devPad = lazyeval::interp(~sd(x, na.rm=T), x=as.name(VARIAVEL)),
