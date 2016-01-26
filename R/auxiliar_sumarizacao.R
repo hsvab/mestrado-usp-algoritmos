@@ -668,20 +668,20 @@ quanti_por_grupo <- function(DF=od,
     agrupado_a <- DF %>%
         group_by_(as.name(AGRUPA_POR)) %>%
         summarise_(
-            min = lazyeval::interp(~min(x, na.rm=T), x=as.name(VARIAVEL)),
-            q1 = lazyeval::interp(~quantile(x, na.rm=T)[2], x=as.name(VARIAVEL)),
-            mediana = lazyeval::interp(~median(x, na.rm=T), x=as.name(VARIAVEL)),
-            q3 = lazyeval::interp(~quantile(x, na.rm=T)[4], x=as.name(VARIAVEL)),
-            max = lazyeval::interp(~max(x, na.rm=T), x=as.name(VARIAVEL))
+            min = lazyeval::interp(~round(min(x, na.rm=T),2), x=as.name(VARIAVEL)),
+            q1 = lazyeval::interp(~round(quantile(x, na.rm=T)[2],2), x=as.name(VARIAVEL)),
+            mediana = lazyeval::interp(~round(median(x, na.rm=T),2), x=as.name(VARIAVEL)),
+            q3 = lazyeval::interp(~round(quantile(x, na.rm=T)[4],2), x=as.name(VARIAVEL)),
+            max = lazyeval::interp(~round(max(x, na.rm=T),2), x=as.name(VARIAVEL))
         ) %>% as.data.frame()
 
     geral_a <- DF %>%
         summarise_(
-            min = lazyeval::interp(~min(x, na.rm=T), x=as.name(VARIAVEL)),
-            q1 = lazyeval::interp(~quantile(x, na.rm=T)[2], x=as.name(VARIAVEL)),
-            mediana = lazyeval::interp(~median(x, na.rm=T), x=as.name(VARIAVEL)),
-            q3 = lazyeval::interp(~quantile(x, na.rm=T)[4], x=as.name(VARIAVEL)),
-            max = lazyeval::interp(~max(x, na.rm=T), x=as.name(VARIAVEL))
+            min = lazyeval::interp(~round(min(x, na.rm=T),2), x=as.name(VARIAVEL)),
+            q1 = lazyeval::interp(~round(quantile(x, na.rm=T)[2],2), x=as.name(VARIAVEL)),
+            mediana = lazyeval::interp(~round(median(x, na.rm=T),2), x=as.name(VARIAVEL)),
+            q3 = lazyeval::interp(~round(quantile(x, na.rm=T)[4],2), x=as.name(VARIAVEL)),
+            max = lazyeval::interp(~round(max(x, na.rm=T),2), x=as.name(VARIAVEL))
         ) %>% as.data.frame()
 
     geral_a[[AGRUPA_POR]] <- "Geral"
@@ -691,20 +691,20 @@ quanti_por_grupo <- function(DF=od,
     agrupado_b <- DF %>%
         group_by_(as.name(AGRUPA_POR)) %>%
         summarise_(
-            media = lazyeval::interp(~mean(x, na.rm=T), x=as.name(VARIAVEL)),
-            devPad = lazyeval::interp(~sd(x, na.rm=T), x=as.name(VARIAVEL)),
-            skew = lazyeval::interp(~skew(x, na.rm=T), x=as.name(VARIAVEL)),
-            curtose = lazyeval::interp(~kurtosi(x, na.rm=T), x=as.name(VARIAVEL)),
-            NAs = lazyeval::interp(~sum(is.na(x)), x=as.name(VARIAVEL))
+            media = lazyeval::interp(~round(mean(x, na.rm=T),2), x=as.name(VARIAVEL)),
+            devPad = lazyeval::interp(~round(sd(x, na.rm=T),2), x=as.name(VARIAVEL)),
+            skew = lazyeval::interp(~round(skew(x, na.rm=T),2), x=as.name(VARIAVEL)),
+            curtose = lazyeval::interp(~round(kurtosi(x, na.rm=T),2), x=as.name(VARIAVEL)),
+            NAs = lazyeval::interp(~round(sum(is.na(x)),2), x=as.name(VARIAVEL))
         ) %>% as.data.frame()
 
     geral_b <- DF %>%
         summarise_(
-            media = lazyeval::interp(~mean(x, na.rm=T), x=as.name(VARIAVEL)),
-            devPad = lazyeval::interp(~sd(x, na.rm=T), x=as.name(VARIAVEL)),
-            skew = lazyeval::interp(~skew(x, na.rm=T), x=as.name(VARIAVEL)),
-            curtose = lazyeval::interp(~kurtosi(x, na.rm=T), x=as.name(VARIAVEL)),
-            NAs = lazyeval::interp(~sum(is.na(x)), x=as.name(VARIAVEL))
+            media = lazyeval::interp(~round(mean(x, na.rm=T),2), x=as.name(VARIAVEL)),
+            devPad = lazyeval::interp(~round(sd(x, na.rm=T),2), x=as.name(VARIAVEL)),
+            skew = lazyeval::interp(~round(skew(x, na.rm=T),2), x=as.name(VARIAVEL)),
+            curtose = lazyeval::interp(~round(kurtosi(x, na.rm=T),2), x=as.name(VARIAVEL)),
+            NAs = lazyeval::interp(~round(sum(is.na(x)),2), x=as.name(VARIAVEL))
         ) %>% as.data.frame()
 
     geral_b[[AGRUPA_POR]] <- "Geral"

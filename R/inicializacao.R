@@ -4,7 +4,7 @@ packages<-function(x){
   base::require(x,character.only=TRUE, quietly=TRUE)
 }
 
-pacotes_mestrado <- c("ggplot2", "readstata13", "foreign","data.table",
+pacotes_mestrado <- c("mlogit", "ggplot2", "readstata13", "foreign","data.table",
                       "Hmisc", "gmodels", "memisc", "sfsmisc", "lazyeval",
                        "psych", "plyr", "fastcluster", "mlogit", "mnlogit",
                       "dplyr")
