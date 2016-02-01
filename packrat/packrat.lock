@@ -28,7 +28,7 @@ Source: CRAN
 Version: 3.17-1
 Hash: 2ef69e4f3e49191a906eb9c76825fe84
 Requires: Formula, acepack, ggplot2, gridExtra, gtable, lattice,
-    latticeExtra
+    latticeExtra, nnet
 
 Package: MatrixModels
 Source: CRAN
@@ -48,8 +48,8 @@ Requires: R.methodsS3
 
 Package: R6
 Source: CRAN
-Version: 2.1.1
-Hash: 20a88b2c9c84aecff2702789a4d102f5
+Version: 2.1.2
+Hash: c515e41c73294952cbb33ee1c1be5a2d
 
 Package: RColorBrewer
 Source: CRAN
@@ -139,7 +139,7 @@ Package: flexmix
 Source: CRAN
 Version: 2.3-13
 Hash: 4c5ae92368e1cc01c26afd1e67b66cd3
-Requires: lattice, modeltools
+Requires: lattice, modeltools, nnet
 
 Package: formatR
 Source: CRAN
@@ -206,8 +206,8 @@ Requires: digest
 
 Package: kernlab
 Source: CRAN
-Version: 0.9-22
-Hash: 556a50ab80dae4ed05d122a8214ae596
+Version: 0.9-23
+Hash: 021baa7353ed8f53816d28f13b106255
 
 Package: knitr
 Source: CRAN
@@ -266,8 +266,8 @@ Hash: 6c43038fa43e75f56bcde10e82e978f7
 
 Package: memisc
 Source: CRAN
-Version: 0.99.3
-Hash: 6b279d4b8f575d337ba91ce04f848a35
+Version: 0.99.3.2
+Hash: ce67bd094078abcfcca30883bd19566f
 Requires: lattice
 
 Package: mime
@@ -312,6 +312,11 @@ Package: mvtnorm
 Source: CRAN
 Version: 1.0-4
 Hash: 5157563f02065769aee25b192278ac25
+
+Package: nnet
+Source: CRAN
+Version: 7.3-11
+Hash: 7ce468235b55bd6487a76d2093a6ce5d
 
 Package: packrat
 Source: CRAN
