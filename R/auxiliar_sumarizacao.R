@@ -642,7 +642,7 @@ local({
     #
     # passe o valor como uma string.
     # P.ex: quanti_por_ano(FE_DOM)
-    quanti_por_grupo <- function(DF=od,
+    quanti.por.grupo <- function(DF=od,
                                  VARIAVEL=NULL,
                                  AGRUPA_POR='ANO',
                                  IMPRIME=T,
@@ -783,4 +783,6 @@ local({
     assign(".mestrado.resumo.resultados.familias", resumo.resultados.familias,
            envir=globalenv())
 
+    assign(".mestrado.quanti.por.grupo", quanti.por.grupo,
+           envir=globalenv())
 })
