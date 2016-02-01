@@ -570,7 +570,7 @@ resumo.resultados <-  function(DF=od,
                                 RETORNA = T,
                                 APENAS_COM_VIAGEM = APENAS_COM_VIAGEM)
   cat("Resultados das variáveis de viagens calculados.\n")
-  cat("Calculando resultados das variáveis das viagens... ")
+  cat("Calculando resultados das variáveis das pessoas... ")
   pessoas <- resumo.resultados.pessoas(
                                 DF = DF,
                                 AGRUPA_POR = AGRUPA_POR,
