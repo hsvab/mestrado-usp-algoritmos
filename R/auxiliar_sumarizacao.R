@@ -335,7 +335,10 @@ resumo.resultados.pessoas <- function(DF=od,
       perc_pessoas_trab = round( 100 * sum( OCUP==1, na.rm=T ) /
                                    sum( !is.na(OCUP) ),
                                  digits=2 ),
-      media_renda_ind = round( mean( REN_IND, na.rm=T ), digits=2 )
+      media_renda_ind = round( mean( REN_IND, na.rm=T ), digits=2 ),
+      perc_pess_serv_pas = round( 100 * sum( PESS_MOTIVO_SERV_PAS > 0, na.rm=T) /
+                                    sum( !is.na(PESS_MOTIVO_SERV_PAS) ),
+                                     digits=2)
     ) %>%
     dplyr::rename(
       "% de pessoas do sexo feminino" = perc_pessoas_sexo_fem,
@@ -353,7 +356,8 @@ resumo.resultados.pessoas <- function(DF=od,
       "% de pessoas com superior completo" = perc_grau_instr_4,
       "% de pessoas que estudam" = perc_pessoas_estudam,
       "% de pessoas que trabalham" = perc_pessoas_trab,
-      "Média da Renda Individual (R$ - out/2007)" = media_renda_ind
+      "Média da Renda Individual (R$ - out/2007)" = media_renda_ind,
+      "% de pessoas que servem passageiro" = perc_pess_serv_pas
     )
 
   if(IMPRIME) {
@@ -463,7 +467,18 @@ resumo.resultados.familias <- function(DF=od,
       perc_fam_tem_auto = round( 100 * sum( PRESENCA_AUTO, na.rm=T) /
                                   sum( !is.na(PRESENCA_AUTO) ),
                                  digits=2 ),
+      perc_fam_tem_um_auto = round( 100 * sum( PRESENCA_AUTO1, na.rm=T) /
+                                      sum( !is.na( PRESENCA_AUTO1) ),
+                                    digits=2 ),
+      perc_fam_tem_mais_de_um_auto = round( 100 * sum( PRESENCA_AUTO2, na.rm=T) /
+                                      sum( !is.na( PRESENCA_AUTO2) ),
+                                    digits=2 ),
       media_qt_auto_fam = round( mean( QT_AUTO, na.rm=T ),
+                                 digits=2 ),
+      perc_fam_pres_trab_fam = round( 100 * sum( FAM_PRESENCA_TRAB, na.rm=T) /
+                                        sum( !is.na(FAM_PRESENCA_TRAB) ),
+                                      digits=2 ),
+      media_qtde_trab_fam = round( mean( FAM_QTDE_TRAB, na.rm=T ),
                                  digits=2 )
     ) %>%
     dplyr::rename(
@@ -481,7 +496,11 @@ resumo.resultados.familias <- function(DF=od,
       "% de famílias com presença de adolescente entre 15 e 19 anos" = perc_fam_fx_et_3,
       "% de famílias com presença de idosos com 60 anos ou mais" = perc_fam_fx_et_60m,
       "% de famílias que têm automóvel" = perc_fam_tem_auto,
-      "Média da quantidade de autos na família" = media_qt_auto_fam
+      "% de famílias que têm um automóvel" = perc_fam_tem_um_auto,
+      "% de famílias que têm mais de um automóvel" = perc_fam_tem_mais_de_um_auto,
+      "Média da quantidade de autos na família" = media_qt_auto_fam,
+      "% de famílias c/ presença de trabalhador na família" = perc_fam_pres_trab_fam,
+      "Média da quantidade de trabalhadores na família" = media_qtde_trab_fam
     )
 
   if(IMPRIME) {
