@@ -65,11 +65,24 @@ local({
   if (file.exists(.rdataPath))
     cat("Carregando dados salvos do ambiente")
     load(.rdataPath, envir = globalenv())
+  require(utils)
+  try(loadhistory(Sys.getenv("R_HISTFILE")))
   # Carrega principais scripts do mestrado
   source("R/inicializacao.R")
 }
 
 # save the .RData at exit
 .Last <- function() {
+  cat("\nEncerrando as atividades por enquanto...\n")
+  cat("Salvando o ambiente atual antes de fechar o projeto,\n")
+  cat("Esta operação pode demorar um pouco.\n")
+  cat("Primeiro salvando o histórico... ")
+  require(utils)
+  try(savehistory(Sys.getenv("R_HISTFILE")))
+  cat("Histórico Salvo.\n Agora salvando as variáveis de ambiente...")
+  # removendo variáveis de ambiente do mestrado que são recarregadas automaticamente
+  rm(list=ls(pattern=".mestrado.*", all.names=T))
+  rm(list=ls(pattern=".dir*", all.names=T))
   save.image(.rdataPath)
+  cat(" Ambiente salvo, agora sim fechando o R/Rstudio. =)")
 }
