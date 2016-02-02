@@ -18,7 +18,8 @@ local({
         df$VIAG_MOTIVO_TRAB <- as.logical(df$VIAG_MOTIVO_TRAB)
         df$VIAG_MOTIVO_EDUC <- as.logical(df$VIAG_MOTIVO_EDUC)
         df$VIAG_MOTIVO_RES <- as.logical(df$VIAG_MOTIVO_RES)
-        df$VIAG_MOTIVO_OUTROS <- as.logical(df$VIAG_MOTIVO_OUTROS)
+        df$VIAG_MOTIVO_MANUT_COMPRAS <- as.logical(df$VIAG_MOTIVO_MANUT_COMPRAS)
+        df$VIAG_MOTIVO_LAZER_OUTROS <- as.logical(df$VIAG_MOTIVO_LAZER_OUTROS)
         df$VIAG_PER_MADRUG <- as.logical(df$VIAG_PER_MADRUG)
         df$VIAG_PER_COM_MAN <- as.logical(df$VIAG_PER_COM_MAN)
         df$VIAG_PER_MANHA <- as.logical(df$VIAG_PER_MANHA)
@@ -137,11 +138,11 @@ local({
                                       'Filho(a) / Enteado(a)',
                                       'Outro parente / Agregado',
                                       'Empregado residente',
-                                      'Outros (visitante não residente / parente do empregado'))
+                                      'Outros (visitante não residente / parente do empregado)'))
 
         df$SEXO <- factor(df$SEXO,
                           levels=c(0,1),
-                          labels=c("MASC","FEM"))
+                          labels=c("Masculino","Feminino"))
 
         df$ESTUDA <- factor(df$ESTUDA,
                             levels=c(0,1),
