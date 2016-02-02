@@ -785,4 +785,22 @@ local({
 
     assign(".mestrado.quanti.por.grupo", quanti.por.grupo,
            envir=globalenv())
+
+    assign("resumo.resultados", resumo.resultados,
+           envir=globalenv())
+
+    assign("resumo.resultados.gerais", resumo.resultados.gerais,
+           envir=globalenv())
+
+    assign("resumo.resultados.viagens", resumo.resultados.viagens,
+           envir=globalenv())
+
+    assign("resumo.resultados.pessoas", resumo.resultados.pessoas,
+           envir=globalenv())
+
+    assign("resumo.resultados.familias", resumo.resultados.familias,
+           envir=globalenv())
+
+    assign("quanti.por.grupo", quanti.por.grupo,
+           envir=globalenv())
 })

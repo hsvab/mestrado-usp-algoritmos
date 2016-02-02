@@ -118,6 +118,9 @@ local({
       }
     }
 
-    assign(".mestrado.grafico.seleciona.cluster", grafico.seleciona.cluster,
+    assign(".mestrado.grafico_seleciona_cluster", grafico.seleciona.cluster,
+           envir=globalenv())
+    
+    assign("grafico_seleciona_cluster", grafico.seleciona.cluster,
            envir=globalenv())
 })

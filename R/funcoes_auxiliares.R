@@ -266,4 +266,10 @@ local({
 
     assign(".mestrado.multiplot", multiplot,
            envir=globalenv())
+
+    assign("salva.base.od", salva.base.od,
+           envir=globalenv())
+
+    assign("carrega.base.od", carrega.base.od,
+           envir=globalenv())
 })
