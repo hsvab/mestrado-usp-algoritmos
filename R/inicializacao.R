@@ -6,8 +6,8 @@ packages<-function(x){
 
 pacotes_mestrado <- c("mlogit", "ggplot2", "readstata13", "foreign","data.table",
                       "Hmisc", "gmodels", "memisc", "sfsmisc", "lazyeval",
-                       "psych", "plyr", "fastcluster", "mlogit", "mnlogit",
-                      "dplyr")
+                       "psych", "tidyr", "reshape2", "plyr", "fastcluster",
+                      "mlogit", "mnlogit", "dplyr")
 
 cat("Carregando as bibliotecas:\n")
 cat(pacotes_mestrado,"\n")
@@ -35,6 +35,10 @@ cat(" OK\n")
 
 cat("Carregando variáveis globais....")
 source('R/variaveis_gerais.R')
+cat(" OK\n")
+
+cat("Configurando tema para o ggplot....")
+source('R/config_tema_ggplot.R')
 cat(" OK\n")
 
 # Setando diretorio aonde estão os algoritmos

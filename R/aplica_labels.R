@@ -131,9 +131,8 @@ local({
                                         'Renda familiar atribuída'))
 
         df$SIT_FAM <- factor(df$SIT_FAM,
-                             levels=c(0,1,2,3,4,5,6),
-                             labels=c('Não respondeu',
-                                      'Pessoa responsável',
+                             levels=c(1,2,3,4,5,6),
+                             labels=c('Pessoa responsável',
                                       'Cônjuge / Companheiro(a)',
                                       'Filho(a) / Enteado(a)',
                                       'Outro parente / Agregado',
@@ -250,11 +249,12 @@ local({
         # Tem alguns registros com TIPO_VIAG==4. O que fazer? Transformar em NA?
         # TODO??
         ################################################################################
-        # df$TIPO_VIAG <- factor(df$TIPO_VIAG,
-        #                        levels=c(1,2,3),
-        #                        labels=c('Coletivo',
-        #                                 'Individual',
-        #                                 'A pé'))
+        df$TIPO_VIAG <- factor(df$TIPO_VIAG,
+                              levels=c(1,2,3,4),
+                              labels=c('Coletivo',
+                                       'Individual',
+                                       'A pé',
+                                       'outros'))
 
         df$TIPO_EST_AUTO <- factor(df$TIPO_EST_AUTO,
                                    levels=c(0,1,2),
@@ -295,16 +295,16 @@ local({
                                             'noite'))
 
         df$FAIXA_REN_FAM <- factor(df$FAIXA_REN_FAM,
-                                   levels=c(0,5,4,3,2,1),
+                                   levels=c(0,1,2,3,4,5),
                                    labels=c('Sem renda',
-                                            'Classe E (até 2 SM)',
-                                            'Classe D (de 2 a 4 SM)',
-                                            'Classe C (de 4 a 10 SM)',
-                                            'Classe B (de 10 a 20 SM)',
-                                            'Classe A (mais de 20 SM)'))
+                                            'Classe E',
+                                            'Classe D',
+                                            'Classe C',
+                                            'Classe B',
+                                            'Classe A'))
 
         df$FAIXA_REN_IND <- factor(df$FAIXA_REN_IND,
-                                   levels=c(0,7,6,5,4,3,2,1),
+                                   levels=c(0,1,2,3,4,5,6,7),
                                    labels=c('Sem renda',
                                             'até 1 SM',
                                             'de 1 a 2 SM',
