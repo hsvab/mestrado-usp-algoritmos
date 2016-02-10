@@ -227,8 +227,8 @@ Hash: d7158cf4e63e8c12cb227738076b37d8
 
 Package: latticeExtra
 Source: CRAN
-Version: 0.6-26
-Hash: 07a60e9d5b59ddac85b9c26cd81867ca
+Version: 0.6-28
+Hash: efdf3a10a129129f7b8f4ae5a0d7ec3d
 Requires: RColorBrewer, lattice
 
 Package: lazyeval
@@ -266,8 +266,8 @@ Hash: 6c43038fa43e75f56bcde10e82e978f7
 
 Package: memisc
 Source: CRAN
-Version: 0.99.3.2
-Hash: ce67bd094078abcfcca30883bd19566f
+Version: 0.99.5
+Hash: 0aa97e59bf68413f16297f0bb9982ca9
 Requires: lattice
 
 Package: mime
@@ -310,13 +310,13 @@ Requires: colorspace
 
 Package: mvtnorm
 Source: CRAN
-Version: 1.0-4
-Hash: 5157563f02065769aee25b192278ac25
+Version: 1.0-5
+Hash: 55a3581188e15f13f5ba19c18e151ac2
 
 Package: nnet
 Source: CRAN
-Version: 7.3-11
-Hash: 7ce468235b55bd6487a76d2093a6ce5d
+Version: 7.3-12
+Hash: 42c83a1f063b40fd8bb6ad68ed528aa5
 
 Package: packrat
 Source: CRAN
@@ -390,8 +390,8 @@ Hash: acb4dd97d6af1a0e6b2b4ac9c3016487
 
 Package: statmod
 Source: CRAN
-Version: 1.4.23
-Hash: 910282ed1bcc71eb0bf2f254f15f3bfb
+Version: 1.4.24
+Hash: 1aad9bf175b7d9a5c073f633dc635c31
 
 Package: stringi
 Source: CRAN
@@ -404,6 +404,12 @@ Version: 1.0.0
 Hash: 2676dd5f88890910962b733b0f9540e1
 Requires: magrittr, stringi
 
+Package: tidyr
+Source: CRAN
+Version: 0.4.1
+Hash: f7651db13e8cff93626958d4331a21e7
+Requires: Rcpp, dplyr, lazyeval, magrittr, stringi
+
 Package: trimcluster
 Source: CRAN
 Version: 0.1-2
@@ -411,8 +417,8 @@ Hash: 662a899a1377c7d3f2cef1722e335aff
 
 Package: xtable
 Source: CRAN
-Version: 1.8-0
-Hash: 3816a222bb6837b3344d230b54b4c3cc
+Version: 1.8-2
+Hash: 7293235cfcc14cdff1ce7fd1a0212031
 
 Package: yaml
 Source: CRAN
