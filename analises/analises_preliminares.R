@@ -275,3 +275,67 @@ for(i in c(1,2,3,4)){
 }
 
 describe(filter(od, F_VIAG==1)$VIAG_NO_MODOS)
+
+
+###############################################################################
+# DSITANCIAS DAS VIAGENS
+###############################################################################
+
+# od_filtrado deve estar filtrado por viagem (F_VIAG=1)
+od_filtrado <- od %>% filter(F_VIAG==1, DIST_VIAG>0)
+
+# Retorna estatísticas descritivas (para variaveis métricas) do banco completo, por ano.
+quanti.por.grupo(DF=od_filtrado, VARIAVEL='DIST_VIAG')
+
+# Retorna estatisticas descritivas (para variaveis métricas) do banco, segmentando pelos grupos indicados (ano e sexo)
+describe.by(group=select(od_filtrado, ANO, SEXO), x=od_filtrado$DIST_VIAG)
+
+# Criando vetores expandidos
+DIST_VIAG_EXPAND_VIAG=rep(od_filtrado$DIST_VIAG, times=round(od_filtrado$FE_VIAG, 0))
+SEXO_EXPAND_VIAG=rep(od_filtrado$SEXO, times=round(od_filtrado$FE_VIAG, 0))
+ANO_EXPAND_VIAG=rep(od_filtrado$ANO, times=round(od_filtrado$FE_VIAG, 0))
+
+# Unindo os vetores
+df_DIST_VIAG = as.data.frame(cbind(DIST_VIAG_EXPAND_VIAG, SEXO_EXPAND_VIAG, ANO_EXPAND_VIAG))
+
+# Retorna estatisticas descritivas (para variaveis métricas) do banco, segmentando pelos grupos indicados (ano e sexo)
+describe.by(group=select(df_DIST_VIAG, ANO_EXPAND_VIAG), x=df_DIST_VIAG$DIST_VIAG_EXPAND_VIAG)
+describe.by(group=select(df_DIST_VIAG, ANO_EXPAND_VIAG, SEXO_EXPAND_VIAG), x=df_DIST_VIAG$DIST_VIAG_EXPAND_VIAG)
+
+# Retorna estatisticas descritivas (para variaveis métricas) do banco, segmentando pelos grupos indicados (ano e sexo), excluindo quem não fez viagens
+describe.by(group=select(filter(df_DIST_VIAG, DIST_VIAG_EXPAND_VIAG>0), ANO_EXPAND_VIAG), x=filter(df_DIST_VIAG, DIST_VIAG_EXPAND_VIAG>0)$DIST_VIAG_EXPAND_VIAG)
+describe.by(group=select(filter(df_DIST_VIAG, DIST_VIAG_EXPAND_VIAG>0), ANO_EXPAND_VIAG, SEXO_EXPAND_VIAG), x=filter(df_DIST_VIAG, DIST_VIAG_EXPAND_VIAG>0)$DIST_VIAG_EXPAND_VIAG)
+
+# Fazendo teste t para averiguar se as médias entre homens e mulheres são estatisticamente diferentes, para o mesmo ano
+# 1977
+t.test(select(filter(df_DIST_VIAG, ANO_EXPAND_VIAG==1, SEXO_EXPAND_VIAG==1), DIST_VIAG_EXPAND_VIAG),
+       select(filter(df_DIST_VIAG, ANO_EXPAND_VIAG==1, SEXO_EXPAND_VIAG==0), DIST_VIAG_EXPAND_VIAG))
+# 1987
+t.test(select(filter(df_DIST_VIAG, ANO_EXPAND_VIAG==2, SEXO_EXPAND_VIAG==1), DIST_VIAG_EXPAND_VIAG),
+       select(filter(df_DIST_VIAG, ANO_EXPAND_VIAG==2, SEXO_EXPAND_VIAG==0), DIST_VIAG_EXPAND_VIAG))
+# 1997
+t.test(select(filter(df_DIST_VIAG, ANO_EXPAND_VIAG==3, SEXO_EXPAND_VIAG==1), DIST_VIAG_EXPAND_VIAG),
+       select(filter(df_DIST_VIAG, ANO_EXPAND_VIAG==3, SEXO_EXPAND_VIAG==0), DIST_VIAG_EXPAND_VIAG))
+# 2007
+t.test(select(filter(df_DIST_VIAG, ANO_EXPAND_VIAG==4, SEXO_EXPAND_VIAG==1), DIST_VIAG_EXPAND_VIAG),
+       select(filter(df_DIST_VIAG, ANO_EXPAND_VIAG==4, SEXO_EXPAND_VIAG==0), DIST_VIAG_EXPAND_VIAG))
+
+# Fazendo teste t para averiguar se as médias entre mulheres são estatisticamente diferentes entre os anos
+# Mulher de 1977 e Mulher de 1987
+t.test(select(filter(df_DIST_VIAG, ANO_EXPAND_VIAG==1, SEXO_EXPAND_VIAG==1), DIST_VIAG_EXPAND_VIAG),
+       select(filter(df_DIST_VIAG, ANO_EXPAND_VIAG==2, SEXO_EXPAND_VIAG==1), DIST_VIAG_EXPAND_VIAG))
+# Mulher de 1987 e Mulher de 1997
+t.test(select(filter(df_DIST_VIAG, ANO_EXPAND_VIAG==2, SEXO_EXPAND_VIAG==1), DIST_VIAG_EXPAND_VIAG),
+       select(filter(df_DIST_VIAG, ANO_EXPAND_VIAG==3, SEXO_EXPAND_VIAG==1), DIST_VIAG_EXPAND_VIAG))
+# Mulher de 1997 e Mulher de 2007
+t.test(select(filter(df_DIST_VIAG, ANO_EXPAND_VIAG==3, SEXO_EXPAND_VIAG==1), DIST_VIAG_EXPAND_VIAG),
+       select(filter(df_DIST_VIAG, ANO_EXPAND_VIAG==4, SEXO_EXPAND_VIAG==1), DIST_VIAG_EXPAND_VIAG))
+# Homem de 1977 e Homem de 1987
+t.test(select(filter(df_DIST_VIAG, ANO_EXPAND_VIAG==1, SEXO_EXPAND_VIAG==0), DIST_VIAG_EXPAND_VIAG),
+       select(filter(df_DIST_VIAG, ANO_EXPAND_VIAG==2, SEXO_EXPAND_VIAG==0), DIST_VIAG_EXPAND_VIAG))
+# Homem de 1987 e Homem de 1997
+t.test(select(filter(df_DIST_VIAG, ANO_EXPAND_VIAG==2, SEXO_EXPAND_VIAG==0), DIST_VIAG_EXPAND_VIAG),
+       select(filter(df_DIST_VIAG, ANO_EXPAND_VIAG==3, SEXO_EXPAND_VIAG==0), DIST_VIAG_EXPAND_VIAG))
+# Homem de 1997 e Homem de 2007
+t.test(select(filter(df_DIST_VIAG, ANO_EXPAND_VIAG==3, SEXO_EXPAND_VIAG==0), DIST_VIAG_EXPAND_VIAG),
+       select(filter(df_DIST_VIAG, ANO_EXPAND_VIAG==4, SEXO_EXPAND_VIAG==0), DIST_VIAG_EXPAND_VIAG))
