@@ -6,9 +6,9 @@ local({
       #
       # Esta função salva o dataframe e depois compacta ele com bzip.
       # Primeiro o arquivo é salvo como CSV e, depois, ele será compactado.
-      # Enquanto o arquivo CSV estiver sendo salvo, o R ficará em estado suspenso,
-      # mas quando for ocorrer a compactação o R não mais ficará em estado de
-      # suspensão.
+      # Enquanto o arquivo CSV estiver sendo salvo, o R ficará em estado
+      # suspenso, mas quando for ocorrer a compactação o R não mais ficará em
+      # estado de suspensão.
       #
       # Parâmetros:
       #   DF: O dataframe a ser salvo
@@ -18,7 +18,9 @@ local({
 
       #  Primeiro salvamos como CSV:
       arquivo_saida = file.path(sub(pattern = "^(.*)/$","\\1",CAMINHO), "od")
-      if(is.character(VERSAO)) { arquivo_saida = paste0(arquivo_saida, "-", VERSAO) }
+      if(is.character(VERSAO)) {
+        arquivo_saida = paste0(arquivo_saida, "-", VERSAO)
+      }
       arquivo_saida = paste0(arquivo_saida, ".csv")
 
       cat("Salvando o arquivo ", arquivo_saida,"\n", sep='')
@@ -43,8 +45,8 @@ local({
       # Precisa da biblioteca data.table para funcionar
       #
       # Parâmetros:
-      #   VERSAO: Por padrão ele lê o arquivo od.csv, se quiser uma versão diferente
-      #           passe o número como parâmetro nomeado (Exemplo 2);
+      #   VERSAO: Por padrão ele lê o arquivo od.csv, se quiser uma versão
+      #           diferente passe o número como parâmetro nomeado (Exemplo 2);
       #   CAMINHO: Por padrão assume-se que as bases estão no diretório
       #            '../bases/banco unico - pols/'. Se quiser passar um diretório
       #            diferente utilize o parâmetro nomeado (Exemplo 3)
@@ -78,7 +80,11 @@ local({
           system( comando, wait=TRUE )
           cat("Arquivo descompactado, lendo arquivo...\n")
         } else {
-          stop(paste0("O arquivo '", arquivo, "' não foi encontrado, abortando ação"))
+          stop(
+            paste0("O arquivo '",
+                   arquivo,
+                   "' não foi encontrado, abortando ação")
+          )
         }
       }
 
@@ -97,7 +103,8 @@ local({
 
     # Multiple plot function
     #
-    # ggplot objects can be passed in ..., or to plotlist (as a list of ggplot objects)
+    # ggplot objects can be passed in ...,
+    # or to plotlist (as a list of ggplot objects)
     # - cols:   Number of columns in layout
     # - layout: A matrix specifying the layout. If present, 'cols' is ignored.
     #
@@ -141,121 +148,111 @@ local({
       }
     }
 
-    #################################################################################
-    ##          Funções de teste de desempenho dos métodos de leitura
-    #################################################################################
-    #
-    #suite_de_testes_de_leitura <- function() {
-    #
-    #  load.data <- function() {
-    #    print("Primeiro vamos baixar um arquivo de exemplo para ser utilizado.", quote = F)
-    #    print("Vamos utilizar o arquivo od-11 do repositório https://github.com/hsvab/mestrado-usp-ODs/", quote = F)
-    #    url <- "https://github.com/hsvab/mestrado-usp-ODs/raw/master/banco%20unico%20-%20pols/od-11.csv.bz2"
-    #    download.file(url, destfile="teste.csv.bz2", method = "wget")
-    #    print("Download finalizado.", quote=F)
-    #    print("Agora vamos descompactar o arquivo (mantendo também o compactado)... ", quote = F)
-    #    system('bunzip2 -k -f teste.csv.bz2')
-    #    print("Arquivo descompactado.", quote = F)
-    #  }
-    #
-    #  rtab <- function() {
-    #    # Tempos de execução:
-    #    #    usuário   sistema decorrido
-    #    #    51.032     0.640    51.670
-    #    print("Lê teste.csv com comando read.table()", quote = F)
-    #    read.table('teste.csv', sep=';', dec=',', header = T,
-    #           colClasses = c(
-    #                           'ID_PESS'='character',
-    #                           'ID_VIAG'='character',
-    #                           'ID_DOM'='character',
-    #                           'ID_FAM'='character'
-    #                       )
-    #    )
-    #  }
-    #
-    #  rtab_com_bz2 <- function(){
-    #    # Tempos de execução:
-    #    #    usuário   sistema decorrido
-    #    #    78.960     0.264    79.213
-    #    print("Lê teste2.csv.bz2 com comando read.table()", quote = F)
-    #    read.table('teste.csv.bz2', sep=';', dec=',', header = T,
-    #           colClasses = c(
-    #                           'ID_PESS'='character',
-    #                           'ID_VIAG'='character',
-    #                           'ID_DOM'='character',
-    #                           'ID_FAM'='character'
-    #                       )
-    #    )
-    #  }
-    #
-    #  fread_com_bz2 <- function(){
-    #    # Tempos de execução:
-    #    #    usuário   sistema decorrido
-    #    #    15.636     1.864    17.639
-    #    print("Descompacta teste2.csv.bz2 e depois lê teste2.csv com comando fread()", quote = F)
-    #    system('bunzip2 -k -f teste.csv.bz2')
-    #    fread("teste.csv", sep=';', dec=',', header=TRUE, data.table=FALSE, 
-    #           colClasses = c(
-    #                           'ID_PESS'='character',
-    #                           'ID_VIAG'='character',
-    #                           'ID_DOM'='character',
-    #                           'ID_FAM'='character'
-    #                       )
-    #    )
-    #  }
-    #
-    #  apenas_fread <- function() {
-    #    # Tempos de execução:
-    #    #    usuário   sistema decorrido
-    #    #    6.424     0.052     6.469
-    #    print("Lê teste.csv com comando fread()", quote = F)
-    #    fread("teste.csv", sep=';', dec=',', header=TRUE, data.table=FALSE,
-    #           colClasses = c(
-    #                           'ID_PESS'='character',
-    #                           'ID_VIAG'='character',
-    #                           'ID_DOM'='character',
-    #                           'ID_FAM'='character'
-    #                       )
-    #    )
-    #  }
-    #
-    #  load.data()
-    #  cat("\n\n#########################################\n")
-    #  time01 <- system.time( rtab() )
-    #  print(time01)
-    #  cat("\n\n#########################################\n")
-    #  time02 <- system.time( rtab_com_bz2()  )
-    #  print(time02)
-    #  cat("\n\n#########################################\n")
-    #  time03 <- system.time( fread_com_bz2() )
-    #  print(time03)
-    #  cat("\n\n#########################################\n")
-    #  time04 <- system.time( apenas_fread() )
-    #  print(time04)
-    #
-    #  system("rm teste*.csv*")
-    #}
-    #################################################################################
-    ##          Funções de verificação nas correções das bases originais
-    #################################################################################
-    #
-    #correcoes.originais.resumo <- function(df, linhaInicio, linhaFim=NULL) {
-    #  if ( !is.null(linhaFim) ) {
-    #    df[
-    #      as.integer(linhaInicio):as.integer(linhaFim),
-    #      c('ID_DOM','F_DOM','FE_DOM','ID_FAM','F_FAM','FE_FAM','REN_FAM',
-    #        'ID_PESS','F_PESS','FE_PESS','IDADE','SEXO','SIT_FAM','REN_IND',
-    #        'ID_VIAG','F_VIAG','FE_VIAG','DURACAO','H_SAIDA','MIN_SAIDA',
-    #        'H_CHEG','MIN_CHEG','ID_ORIGINAL','ID_CONSOLIDADO_01')]
-    #  } else {
-    #    df[
-    #      as.integer(linhaInicio),
-    #      c('ID_DOM','F_DOM','FE_DOM','ID_FAM','F_FAM','FE_FAM','REN_FAM',
-    #        'ID_PESS','F_PESS','FE_PESS','IDADE','SEXO','SIT_FAM','REN_IND',
-    #        'ID_VIAG','F_VIAG','FE_VIAG','DURACAO','H_SAIDA','MIN_SAIDA',
-    #        'H_CHEG','MIN_CHEG','ID_ORIGINAL','ID_CONSOLIDADO_01')]
-    #  }
-    #}
+    escalar.FEs.por.ano <- function(df) {
+      ## Ajuste dos FEs de forma que a soma de um determinado FE para um
+      ## determinado ano seja 1 e o range varie entre 0 e 1.
+      ## Retorna o dataframe com 4 novas variáveis:
+      ## FE_DOM_SCALED, FE_FAM_SCALED, FE_PESS_SCALED e FE_VIAG_SCALED
+
+      # FE_DOM
+      df <- df %>%
+        filter(F_DOM==1) %>% group_by(ANO) %>% select(ID_DOM, FE_DOM) %>%
+        mutate(FE_DOM_SCALED = FE_DOM/sum(FE_DOM)) %>% ungroup() %>%
+        select(-ANO, -FE_DOM) %>% left_join(od, y=., by='ID_DOM')
+      # FE_FAM
+      df <- df %>%
+        filter(F_FAM==1) %>% group_by(ANO) %>% select(ID_FAM, FE_FAM) %>%
+        mutate(FE_FAM_SCALED = FE_FAM/sum(FE_FAM)) %>% ungroup() %>%
+        select(-ANO, -FE_FAM) %>% left_join(od, y=., by='ID_FAM')
+      # FE_PESS
+      df <- df %>%
+        filter(F_PESS==1) %>% group_by(ANO) %>% select(ID_PESS, FE_PESS) %>%
+        mutate(FE_PESS_SCALED = FE_PESS/sum(FE_PESS)) %>% ungroup() %>%
+        select(-ANO, -FE_PESS) %>% left_join(od, y=., by='ID_PESS')
+      # FE_VIAG
+      df <- df %>%
+        filter(F_VIAG==1) %>% group_by(ANO) %>% select(ID_VIAG, FE_VIAG) %>%
+        mutate(FE_VIAG_SCALED = FE_VIAG/sum(FE_VIAG)) %>% ungroup() %>%
+        select(-ANO, -FE_VIAG) %>% left_join(od, y=., by='ID_VIAG')
+      return(df)
+    }
+
+    expande.vetor.por <- function(vetor, FE=NULL) {
+      # vetor = vetor que será expandido
+      # FE = fator de expansão
+      # Retorna o vetor expandido
+      if (!is.null(FE)) {
+        return(rep(vetor, as.integer(round(FE,0))))
+      } else {
+        return(vetor)
+      }
+    }
+
+    expande.DF.por <- function(data, FE=NULL) {
+      # data = Dataframe a ser expandido
+      # FE = nome da variável do DF que será utilziada como Fator de Expansão (string)
+      # Retorna o DataFrame expandido SEM o Fator de expansão
+      if (!is.null(FE)){
+        data.expandido <- lapply(
+          select_(data,
+                  lazyeval::interp(~-x, x=as.name(FE))
+          ),
+          expande.vetor.por,
+          data[[FE]]
+        )
+        return( data.expandido )
+      } else {
+        return( data )
+      }
+    }
+
+    describeByPond <- function(data, VARIAVEL, GRUPOS, FE, ...){
+      # data = dataframe que contém os dados a serem descritos
+      # VARIAVEL = nome da variável a ser descrita (strign/character)
+      # GRUPOS = lista com as variáveis que serão utilizadas para agrupamento
+      #           (strings)
+      # FE = nome da variável (string) do dataframe que será utilziada como
+      #         Fator de Expansão
+      # O fator de expensão FE será arredondado para zero casas decimais.
+
+      # Expandindo a base passada
+      data <- select_(data, VARIAVEL, FE, .dots=GRUPOS)
+      data <- expande.DF.por(data, FE)
+      describeBy(data[VARIAVEL], data[GRUPOS], ...)
+    }
+
+    limites.outliers <- function(x) {
+      # retorna os limites inferior e superior que delimitam o início dos outliers,
+      # à esquerda e à direita, de um determinado vetor.
+      qnt <- quantile(x, probs=c(.25, .75), na.rm=TRUE)
+      H <- 1.5 * IQR(x, na.rm=TRUE)
+      y = c(
+        'min'=qnt[1] - H,
+        'max'=qnt[2] + H)
+      return(y)
+    }
+
+    outliers.por.grupo <- function(df, groups, var, na.rm=TRUE, zero_in=T, ...) {
+      # retorna os outliers (esquerda e direita) calculando o maior mínimo
+      # e o menor máximo de cada um dos grupos definidos.
+      groups = lapply(groups,as.name)
+      var = as.name(var)
+      a <- df %>%
+        group_by_(.dots=groups) %>%
+        summarise_(
+          min=lazyeval::interp(~.mestrado.limites.outliers(x)[1], x=var),
+          max=lazyeval::interp(~.mestrado.limites.outliers(x)[2], x=var))
+      b <- df %>%
+        summarise_(
+          min=lazyeval::interp(~.mestrado.limites.outliers(x)[1], x=var),
+          max=lazyeval::interp(~.mestrado.limites.outliers(x)[2], x=var))
+      val.min = max(min(a$min, b$min), min(select_(df, var)))
+      val.max = min(max(a$max, b$max), max(select_(df, var)))
+      if (!zero_in & floor(val.min)==0) {
+        val.min = 1
+      }
+      return(c('min'=floor(val.min),'max'=ceil(val.max)))
+    }
 
     # Salvando as funções no ambiente global do projeto
     assign(".mestrado.salva.base.od", salva.base.od,
@@ -267,9 +264,28 @@ local({
     assign(".mestrado.multiplot", multiplot,
            envir=globalenv())
 
+    assign(".mestrado.escalar.FEs.por.ano", escalar.FEs.por.ano,
+           envir=globalenv())
+
+    assign(".mestrado.expande.vetor.por", expande.vetor.por,
+           envir=globalenv())
+
+    assign(".mestrado.expande.DF.por", expande.DF.por,
+           envir=globalenv())
+
+    assign(".mestrado.describeByPond", describeByPond,
+           envir=globalenv())
+
+    assign(".mestrado.limites_outliers", limites.outliers,
+           envir=globalenv())
+
+    assign(".mestrado.outliers.por.grupo", outliers.por.grupo,
+           envir=globalenv())
+
     assign("salva.base.od", salva.base.od,
            envir=globalenv())
 
     assign("carrega.base.od", carrega.base.od,
            envir=globalenv())
+
 })

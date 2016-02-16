@@ -1,5 +1,6 @@
 local({
 
+    #==========================================================================#
     resumo.resultados.gerais <- function(DF=od,
                                          AGRUPA_POR='ANO',
                                          IMPRIME=T,
@@ -29,7 +30,7 @@ local({
       #                     dataframe será retornado no console. Este
       #                     parâmetro não tem qualquer relação com salvar
       #                     o resultado da análise num arquivo CSV.
-      #           SALVA_EM -> string com o caminho aonde o resultado deve ser salvo.
+      #           SALVA_EM -> string com o caminho aonde o resultado será salvo.
       #           NOME_ARQUIVO -> Nome do arquivo aonde o resultado será
       #                           salvo. Se essa informação não for passada
       #                           utiliza um nome default.
@@ -92,6 +93,7 @@ local({
       }
     }
 
+    #==========================================================================#
     resumo.resultados.viagens <- function(DF=od,
                                           AGRUPA_POR='ANO',
                                           APENAS_COM_VIAGEM=T,
@@ -129,7 +131,7 @@ local({
       #                     dataframe será retornado no console. Este
       #                     parâmetro não tem qualquer relação com salvar
       #                     o resultado da análise num arquivo CSV.
-      #           SALVA_EM -> string com o caminho aonde o resultado deve ser salvo.
+      #           SALVA_EM -> string com o caminho aonde o resultado será salvo.
       #           NOME_ARQUIVO -> Nome do arquivo aonde o resultado será
       #                           salvo. Se essa informação não for passada
       #                           utiliza um nome default.
@@ -148,8 +150,10 @@ local({
       }
 
       resumo <- DF %>%
+        dplyr::filter_(lazyeval::interp(~!is.na(x), x=as.name(AGRUPA_POR))) %>%
         dplyr::group_by_(as.name(AGRUPA_POR)) %>%
         dplyr::summarise(
+          #====== VIAGENS ========#
           n_med_viagens_pess = round(
                                 mean(
                                   ifelse(
@@ -166,6 +170,7 @@ local({
                                     NA ),
                                   na.rm=T ),
                                 digits=2 ),
+          #====== DISTANCIA ========#
           med_dist_tot_pess = round(
                                 mean(
                                   ifelse(
@@ -188,6 +193,7 @@ local({
           dist_med_pess_fam = round(
                                 med_dist_tot_fam / n_med_viagens_fam,
                                 digits=2 ),
+          #====== DURACAO ========#
           med_dur_tot_viag_pess = round(
                                     mean(
                                       ifelse(
@@ -209,7 +215,46 @@ local({
                                     digits=2 ),
           duracao_med_viag_fam = round(
                                   med_dur_tot_viag_fam / n_med_viagens_fam,
-                                  digits=2 )
+                                  digits=2 ),
+          #====== TIPO_VIAG ========#
+          perc_tipo_ape = round( 100 * sum( ifelse( as.integer(TIPO_VIAG)==3,
+                                                    F_VIAG, 0 ), na.rm=T ) /
+                                   sum( F_VIAG, na.rm=T ), 2 ),
+          perc_tipo_ind = round( 100 * sum( ifelse( as.integer(TIPO_VIAG)==2,
+                                                   F_VIAG, 0 ), na.rm=T ) /
+                                   sum( F_VIAG, na.rm=T ), 2 ),
+          perc_tipo_col = round( 100 * sum( ifelse( as.integer(TIPO_VIAG)==1,
+                                                    F_VIAG, 0 ), na.rm=T ) /
+                                   sum( F_VIAG, na.rm=T ), 2 ),
+          #====== MODOS ========#
+          perc_trem = round( 100 * sum( ifelse( as.integer(MODO1)==8,
+                                                F_VIAG, 0), na.rm=T ) /
+                               sum( F_VIAG, na.rm=T ), 2),
+          perc_metro = round( 100 * sum( ifelse( as.integer(MODO1)==7,
+                                                 F_VIAG, 0), na.rm=T ) /
+                                sum( F_VIAG, na.rm=T ), 2),
+          perc_onibus = round( 100 * sum( ifelse( as.integer(MODO1)==1,
+                                                  F_VIAG, 0), na.rm=T ) /
+                                 sum( F_VIAG, na.rm=T ), 2),
+          perc_fretado = round( 100 * sum( ifelse( as.integer(MODO1)==2,
+                                                   F_VIAG, 0), na.rm=T ) /
+                                  sum( F_VIAG, na.rm=T ), 2),
+          #====== MOTIVOS ========#
+          perc_trabalho = round( 100 * sum( ifelse( VIAG_MOTIVO_TRAB==1,
+                                                    F_VIAG, 0), na.rm=T ) /
+                                   sum( F_VIAG, na.rm=T ), 2),
+          perc_educacao = round( 100 * sum( ifelse( VIAG_MOTIVO_EDUC==1,
+                                                    F_VIAG, 0), na.rm=T ) /
+                                   sum( F_VIAG, na.rm=T ), 2),
+          perc_serv_pas = round( 100 * sum( ifelse( VIAG_MOTIVO_SERV_PAS==1,
+                                                    F_VIAG, 0), na.rm=T ) /
+                                   sum( F_VIAG, na.rm=T ), 2),
+          perc_manut = round( 100 * sum( ifelse( VIAG_MOTIVO_MANUT_COMPRAS==1,
+                                                 F_VIAG, 0), na.rm=T ) /
+                                sum( F_VIAG, na.rm=T ), 2),
+          perc_lazer = round( 100 * sum( ifelse( VIAG_MOTIVO_LAZER_OUTROS==1,
+                                                 F_VIAG, 0), na.rm=T ) /
+                                sum( F_VIAG, na.rm=T ), 2)
         ) %>%
         dplyr::rename(
           "Nº médio de viagens por pessoa" = n_med_viagens_pess,
@@ -221,7 +266,19 @@ local({
           "Média da duração total da viagem da pessoa (min)" = med_dur_tot_viag_pess,
           "Média da duração total de viagens da família (min)" = med_dur_tot_viag_fam,
           "Duração média de viagens da pessoa (min)" = duracao_med_viag_pess,
-          "Duração média de viagens da família (min)" = duracao_med_viag_fam
+          "Duração média de viagens da família (min)" = duracao_med_viag_fam,
+          "% de viagens realizadas a pé" = perc_tipo_ape,
+          "% de viagens realizadas por transporte individual" = perc_tipo_ind,
+          "% de viagens realizadas por transporte coletivo" = perc_tipo_col,
+          "% de viagens realizadas por trem" = perc_trem,
+          "% de viagens realizadas por metrô" = perc_metro,
+          "% de viagens realizadas por ônibus de linha" = perc_onibus,
+          "% de viagens realizadas por ônibus escolas / fretado" = perc_fretado,
+          "% de viagens realizadas com motivo trabalho" = perc_trabalho,
+          "% de viagens realizadas com motivo educação" = perc_educacao,
+          "% de viagens realizadas com motivo servir passageiro" = perc_serv_pas,
+          "% de viagens realizadas com motivo manutenção/compras" = perc_manut,
+          "% de viagens realizadas com motivo lazer/outros" = perc_lazer
       )
 
       if(IMPRIME) {
@@ -236,7 +293,8 @@ local({
         if( is.character(NOME_ARQUIVO) ) {
           salva = file.path(salva, paste0(NOME_ARQUIVO,'.csv'))
         } else {
-          salva = file.path(salva, paste0("resumo_viagem_por_",AGRUPA_POR,'.csv'))
+          salva = file.path(salva, paste0("resumo_viagem_por_",
+                                          AGRUPA_POR, '.csv'))
         }
 
         cat("Salvando o resultado da análise no arquivo '", salva, "'", sep='')
@@ -248,6 +306,7 @@ local({
       }
     }
 
+    #==========================================================================#
     resumo.resultados.pessoas <- function(DF=od,
                                           AGRUPA_POR='ANO',
                                           IMPRIME=T,
@@ -278,7 +337,7 @@ local({
       #                     dataframe será retornado no console. Este
       #                     parâmetro não tem qualquer relação com salvar
       #                     o resultado da análise num arquivo CSV.
-      #           SALVA_EM -> string com o caminho aonde o resultado deve ser salvo.
+      #           SALVA_EM -> string com o caminho aonde o resultado será salvo.
       #           NOME_ARQUIVO -> Nome do arquivo aonde o resultado será
       #                           salvo. Se essa informação não for passada
       #                           utiliza um nome default.
@@ -374,7 +433,8 @@ local({
         if( is.character(NOME_ARQUIVO) ) {
           salva = file.path(salva, paste0(NOME_ARQUIVO,'.csv'))
         } else {
-          salva = file.path(salva, paste0("resumo_pessoa_por_",AGRUPA_POR,'.csv'))
+          salva = file.path(salva, paste0("resumo_pessoa_por_",
+                                          AGRUPA_POR, '.csv'))
         }
 
         cat("Salvando o resultado da análise no arquivo '", salva, "'", sep='')
@@ -386,6 +446,7 @@ local({
       }
     }
 
+    #==========================================================================#
     resumo.resultados.familias <- function(DF=od,
                                            AGRUPA_POR='ANO',
                                            IMPRIME=T,
@@ -416,7 +477,7 @@ local({
       #                     dataframe será retornado no console. Este
       #                     parâmetro não tem qualquer relação com salvar
       #                     o resultado da análise num arquivo CSV.
-      #           SALVA_EM -> string com o caminho aonde o resultado deve ser salvo.
+      #           SALVA_EM -> string com o caminho aonde o resultado será salvo.
       #           NOME_ARQUIVO -> Nome do arquivo aonde o resultado será
       #                           salvo. Se essa informação não for passada
       #                           utiliza um nome default.
@@ -463,8 +524,10 @@ local({
           perc_fam_fx_et_3 = round( 100 * sum( PRESENCA_FILH_15a19==1, na.rm=T) /
                                       sum( !is.na(PRESENCA_FILH_15a19) ),
                                     digits=2 ),
-          perc_fam_fx_et_60m = round( 100 * sum( PRESENCA_IDOSO_60_70==1 | PRESENCA_IDOSO_70==1, na.rm=T) /
-                                        sum( !is.na(PRESENCA_IDOSO_60_70) | !is.na(PRESENCA_IDOSO_70)  ),
+          perc_fam_fx_et_60m = round( 100 * sum( PRESENCA_IDOSO_60_70==1 |
+                                                 PRESENCA_IDOSO_70==1, na.rm=T) /
+                                        sum( !is.na(PRESENCA_IDOSO_60_70) |
+                                               !is.na(PRESENCA_IDOSO_70)  ),
                                       digits=2 ),
           perc_fam_tem_auto = round( 100 * sum( PRESENCA_AUTO, na.rm=T) /
                                       sum( !is.na(PRESENCA_AUTO) ),
@@ -472,9 +535,9 @@ local({
           perc_fam_tem_um_auto = round( 100 * sum( PRESENCA_AUTO1, na.rm=T) /
                                           sum( !is.na( PRESENCA_AUTO1) ),
                                         digits=2 ),
-          perc_fam_tem_mais_de_um_auto = round( 100 * sum( PRESENCA_AUTO2, na.rm=T) /
-                                          sum( !is.na( PRESENCA_AUTO2) ),
-                                        digits=2 ),
+          perc_fam_mais_de_um_auto = round( 100 * sum( PRESENCA_AUTO2, na.rm=T) /
+                                              sum( !is.na( PRESENCA_AUTO2) ),
+                                            digits=2 ),
           media_qt_auto_fam = round( mean( QT_AUTO, na.rm=T ),
                                      digits=2 ),
           perc_fam_pres_trab_fam = round( 100 * sum( FAM_PRESENCA_TRAB, na.rm=T) /
@@ -499,7 +562,7 @@ local({
           "% de famílias com presença de idosos com 60 anos ou mais" = perc_fam_fx_et_60m,
           "% de famílias que têm automóvel" = perc_fam_tem_auto,
           "% de famílias que têm um automóvel" = perc_fam_tem_um_auto,
-          "% de famílias que têm mais de um automóvel" = perc_fam_tem_mais_de_um_auto,
+          "% de famílias que têm mais de um automóvel" = perc_fam_mais_de_um_auto,
           "Média da quantidade de autos na família" = media_qt_auto_fam,
           "% de famílias c/ presença de trabalhador na família" = perc_fam_pres_trab_fam,
           "Média da quantidade de trabalhadores na família" = media_qtde_trab_fam
@@ -517,7 +580,8 @@ local({
         if( is.character(NOME_ARQUIVO) ) {
           salva = file.path(salva, paste0(NOME_ARQUIVO,'.csv'))
         } else {
-          salva = file.path(salva, paste0("resumo_familia_por_",AGRUPA_POR,'.csv'))
+          salva = file.path(salva, paste0("resumo_familia_por_",
+                                          AGRUPA_POR, '.csv'))
         }
 
         cat("Salvando o resultado da análise no arquivo '", salva, "'", sep='')
@@ -529,6 +593,7 @@ local({
       }
     }
 
+    #==========================================================================#
     resumo.resultados <-  function(DF=od,
                                    AGRUPA_POR='ANO',
                                    APENAS_COM_VIAGEM=T,
@@ -565,7 +630,7 @@ local({
       #                     dataframe será retornado no console. Este
       #                     parâmetro não tem qualquer relação com salvar
       #                     o resultado da análise num arquivo CSV.
-      #           SALVA_EM -> string com o caminho aonde o resultado deve ser salvo.
+      #           SALVA_EM -> string com o caminho aonde o resultado será salvo.
       #           NOME_ARQUIVO -> Nome do arquivo aonde o resultado será
       #                           salvo. Se essa informação não for passada
       #                           utiliza um nome default.
@@ -639,7 +704,8 @@ local({
 
     }
 
-    #
+
+    #==========================================================================#
     # passe o valor como uma string.
     # P.ex: quanti_por_ano(FE_DOM)
     quanti.por.grupo <- function(DF=od,
@@ -689,20 +755,30 @@ local({
         agrupado_a <- DF %>%
             group_by_(as.name(AGRUPA_POR)) %>%
             summarise_(
-                min = lazyeval::interp(~round(min(x, na.rm=T),2), x=as.name(VARIAVEL)),
-                q1 = lazyeval::interp(~round(quantile(x, na.rm=T)[2],2), x=as.name(VARIAVEL)),
-                mediana = lazyeval::interp(~round(median(x, na.rm=T),2), x=as.name(VARIAVEL)),
-                q3 = lazyeval::interp(~round(quantile(x, na.rm=T)[4],2), x=as.name(VARIAVEL)),
-                max = lazyeval::interp(~round(max(x, na.rm=T),2), x=as.name(VARIAVEL))
+                min     = lazyeval::interp(~round(min(x, na.rm=T),2),
+                                           x=as.name(VARIAVEL)),
+                q1      = lazyeval::interp(~round(quantile(x, na.rm=T)[2],2),
+                                           x=as.name(VARIAVEL)),
+                mediana = lazyeval::interp(~round(median(x, na.rm=T),2),
+                                           x=as.name(VARIAVEL)),
+                q3      = lazyeval::interp(~round(quantile(x, na.rm=T)[4],2),
+                                           x=as.name(VARIAVEL)),
+                max     = lazyeval::interp(~round(max(x, na.rm=T),2),
+                                           x=as.name(VARIAVEL))
             ) %>% as.data.frame()
 
         geral_a <- DF %>%
             summarise_(
-                min = lazyeval::interp(~round(min(x, na.rm=T),2), x=as.name(VARIAVEL)),
-                q1 = lazyeval::interp(~round(quantile(x, na.rm=T)[2],2), x=as.name(VARIAVEL)),
-                mediana = lazyeval::interp(~round(median(x, na.rm=T),2), x=as.name(VARIAVEL)),
-                q3 = lazyeval::interp(~round(quantile(x, na.rm=T)[4],2), x=as.name(VARIAVEL)),
-                max = lazyeval::interp(~round(max(x, na.rm=T),2), x=as.name(VARIAVEL))
+                min     = lazyeval::interp(~round(min(x, na.rm=T),2),
+                                           x=as.name(VARIAVEL)),
+                q1      = lazyeval::interp(~round(quantile(x, na.rm=T)[2],2),
+                                           x=as.name(VARIAVEL)),
+                mediana = lazyeval::interp(~round(median(x, na.rm=T),2),
+                                           x=as.name(VARIAVEL)),
+                q3      = lazyeval::interp(~round(quantile(x, na.rm=T)[4],2),
+                                           x=as.name(VARIAVEL)),
+                max     = lazyeval::interp(~round(max(x, na.rm=T),2),
+                                           x=as.name(VARIAVEL))
             ) %>% as.data.frame()
 
         geral_a[[AGRUPA_POR]] <- "Geral"
@@ -712,20 +788,30 @@ local({
         agrupado_b <- DF %>%
             group_by_(as.name(AGRUPA_POR)) %>%
             summarise_(
-                media = lazyeval::interp(~round(mean(x, na.rm=T),2), x=as.name(VARIAVEL)),
-                devPad = lazyeval::interp(~round(sd(x, na.rm=T),2), x=as.name(VARIAVEL)),
-                skew = lazyeval::interp(~round(skew(x, na.rm=T),2), x=as.name(VARIAVEL)),
-                curtose = lazyeval::interp(~round(kurtosi(x, na.rm=T),2), x=as.name(VARIAVEL)),
-                NAs = lazyeval::interp(~round(sum(is.na(x)),2), x=as.name(VARIAVEL))
+                media   = lazyeval::interp(~round(mean(x, na.rm=T),2),
+                                           x=as.name(VARIAVEL)),
+                devPad  = lazyeval::interp(~round(sd(x, na.rm=T),2),
+                                           x=as.name(VARIAVEL)),
+                skew    = lazyeval::interp(~round(skew(x, na.rm=T),2),
+                                           x=as.name(VARIAVEL)),
+                curtose = lazyeval::interp(~round(kurtosi(x, na.rm=T),2),
+                                           x=as.name(VARIAVEL)),
+                NAs     = lazyeval::interp(~round(sum(is.na(x)),2),
+                                           x=as.name(VARIAVEL))
             ) %>% as.data.frame()
 
         geral_b <- DF %>%
             summarise_(
-                media = lazyeval::interp(~round(mean(x, na.rm=T),2), x=as.name(VARIAVEL)),
-                devPad = lazyeval::interp(~round(sd(x, na.rm=T),2), x=as.name(VARIAVEL)),
-                skew = lazyeval::interp(~round(skew(x, na.rm=T),2), x=as.name(VARIAVEL)),
-                curtose = lazyeval::interp(~round(kurtosi(x, na.rm=T),2), x=as.name(VARIAVEL)),
-                NAs = lazyeval::interp(~round(sum(is.na(x)),2), x=as.name(VARIAVEL))
+                media   = lazyeval::interp(~round(mean(x, na.rm=T),2),
+                                           x=as.name(VARIAVEL)),
+                devPad  = lazyeval::interp(~round(sd(x, na.rm=T),2),
+                                           x=as.name(VARIAVEL)),
+                skew    = lazyeval::interp(~round(skew(x, na.rm=T),2),
+                                           x=as.name(VARIAVEL)),
+                curtose = lazyeval::interp(~round(kurtosi(x, na.rm=T),2),
+                                           x=as.name(VARIAVEL)),
+                NAs     = lazyeval::interp(~round(sum(is.na(x)),2),
+                                           x=as.name(VARIAVEL))
             ) %>% as.data.frame()
 
         geral_b[[AGRUPA_POR]] <- "Geral"
@@ -748,7 +834,9 @@ local({
           if( is.character(NOME_ARQUIVO) ) {
             salva = file.path(salva, paste0(NOME_ARQUIVO,'.csv'))
           } else {
-            salva = file.path(salva, paste0("quanti-por-grupo-",AGRUPA_POR,'-',VARIAVEL,'.csv'))
+            salva = file.path(salva, paste0("quanti-por-grupo-",
+                                            AGRUPA_POR, '-',
+                                            VARIAVEL, '.csv'))
           }
 
           cat("Salvando o resultado da análise no arquivo '", salva, "'", sep='')
@@ -760,6 +848,7 @@ local({
         }
     }
 
+    #==========================================================================#
     # quali_por_ano
     #  xtabs(~ANO+CD_ENTRE, data=od, drop.unused.levels=FALSE) %>% t() %>% ftable()
     #  od %>%
@@ -767,6 +856,7 @@ local({
     #    xtabs(~ANO+MODO4, data=., drop.unused.levels=FALSE, exclude=NULL) %>%
     #    ftable()
 
+    #==========================================================================#
     # Salvando as funções no ambiente global do projeto
     assign(".mestrado.resumo.resultados", resumo.resultados,
            envir=globalenv())
